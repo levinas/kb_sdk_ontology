@@ -14,6 +14,7 @@ module ElectronicAnnotationMethods {
         workspace_name - the name of the workspace for input/output
         input_genome_ref - reference to the input genome object
         ontology_translation_ref - optional reference to user specified ontology translation map
+        output_genome_name - the name of the mapped genome annotation object
 
         @optional ontology_translation_ref
     */
