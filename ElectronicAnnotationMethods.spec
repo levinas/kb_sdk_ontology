@@ -1,42 +1,58 @@
 /*
 A KBase module: ElectronicAnnotationMethods
-This sample module contains one small method - filter_contigs.
+This module contains the following methods:
+
+  InterPro2GO
+  EC2GO
+  UniProtKB-Keyword2GO
+
 */
 
 module ElectronicAnnotationMethods {
-    /*
-        A string representing a ContigSet id.
-    */
-    typedef string contigset_id;
+
+    typedef string ws_name;
 
     /*
-        A string representing a workspace name.
+        The workspace ID for a Genome data object.
+        @id ws KBaseGenomes.Genome
     */
-    typedef string workspace_name;
+    typedef string ws_genome_id;
 
+    /*
+        The workspace ID for a OntologyTranslation data object.
+        @id ws KBaseOntology.OntologyTranslation
+    */
+    typedef string ws_translation_id;
+
+    /*
+        workspace_name - the name of the workspace for input/output
+        genome_ref - reference to the input genome object
+        ontology_translation_ref - optional reference to user specified ontology translation map
+
+        @optional ontology_translation_ref
+    */
     typedef structure {
-        workspace_name workspace;
-        contigset_id contigset_id;
-        int min_length;
-    } FilterContigsParams;
-
-    /* 
-        The workspace ID for a ContigSet data object.
-        @id ws KBaseGenomes.ContigSet
-    */
-    typedef string ws_contigset_id;
+        ws_name workspace_name;
+        ws_genome_id genome_ref;
+        ws_ontology_translation_id ontology_translation_ref;
+    } ElectronicAnnotationParams;
 
     typedef structure {
         string report_name;
         string report_ref;
-        ws_contigset_id new_contigset_ref;
-        int n_initial_contigs;
-        int n_contigs_removed;
-        int n_contigs_remaining;
-    } FilterContigsResults;
-	
-    /*
-        Filter contigs in a ContigSet by DNA length
-    */
-    funcdef filter_contigs(FilterContigsParams params) returns (FilterContigsResults) authentication required;
+        ws_genome_id new_genome_ref;
+        int n_total_features;
+        int n_features_mapped;
+    } ElectronicAnnotationResults;
+
+
+    funcdef interpro2go(ElectronicAnnotationParams params) returns (ElectronicAnnotationResults output)
+        authentication required;
+
+    funcdef ec2go(ElectronicAnnotationParams params) returns (ElectronicAnnotationResults output)
+        authentication required;
+
+    funcdef uniprotkb_keyword2go(ElectronicAnnotationParams params) returns (ElectronicAnnotationResults output)
+        authentication required;
+
 };
