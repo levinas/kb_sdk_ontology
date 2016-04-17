@@ -2,9 +2,9 @@
 A KBase module: ElectronicAnnotationMethods
 This module wraps the following methods:
 
-  InterPro2GO
-  EC2GO
-  UniProtKB-Keyword2GO
+  interpro2go          -> InterPro2GO
+  ec2go                -> EC2GO
+  uniprotkb_keyword2go -> UniProtKB-Keyword2GO
 
 */
 
