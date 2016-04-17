@@ -9,6 +9,15 @@ MAINTAINER KBase Developer
 
 # -----------------------------------------
 
+RUN apt-get install libffi-dev libssl-dev
+RUN pip install --upgrade requests[security]
+
+# Install InterProScan
+
+
+
+# Copy local wrapper files, and build
+
 COPY ./ /kb/module
 RUN mkdir -p /kb/module/work
 
