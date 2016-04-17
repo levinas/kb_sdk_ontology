@@ -10,37 +10,24 @@ This module contains the following methods:
 
 module ElectronicAnnotationMethods {
 
-    typedef string ws_name;
-
-    /*
-        The workspace ID for a Genome data object.
-        @id ws KBaseGenomes.Genome
-    */
-    typedef string ws_genome_id;
-
-    /*
-        The workspace ID for a OntologyTranslation data object.
-        @id ws KBaseOntology.OntologyTranslation
-    */
-    typedef string ws_translation_id;
-
     /*
         workspace_name - the name of the workspace for input/output
-        genome_ref - reference to the input genome object
+        input_genome_ref - reference to the input genome object
         ontology_translation_ref - optional reference to user specified ontology translation map
 
         @optional ontology_translation_ref
     */
     typedef structure {
-        ws_name workspace_name;
-        ws_genome_id genome_ref;
-        ws_ontology_translation_id ontology_translation_ref;
+        string workspace_name;
+        string input_genome_ref;
+        string ontology_translation_ref;
+        string output_genome_name;
     } ElectronicAnnotationParams;
 
     typedef structure {
         string report_name;
         string report_ref;
-        ws_genome_id new_genome_ref;
+        string output_genome_ref;
         int n_total_features;
         int n_features_mapped;
     } ElectronicAnnotationResults;

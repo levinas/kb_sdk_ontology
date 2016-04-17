@@ -4,54 +4,72 @@
         "fangfang"
     ],
     "contact": "help@kbase.us",
+    "visible": true,
     "categories": ["active"],
     "widgets": {
         "input": null,
         "output": "kbaseReportView"
     },
-    "parameters": [ 
+    "parameters": [
         {
-            "id": "contigset_id",
+            "id": "input_genome",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
             "default_values": [ "" ],
             "field_type": "text",
             "text_options": {
-                "valid_ws_types": [ "KBaseGenomes.ContigSet" ]
+                "valid_ws_types": [ "KBaseGenomes.Genome" ]
             }
         },
         {
-            "id": "min_length",
+            "id": "ontology_translation",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
             "default_values": [ "" ],
             "field_type": "text",
             "text_options": {
-                "validate_as": "int",
-                "min_integer" : 0
+                "valid_ws_types": [ "KBaseOntology.OntologyTranslation" ]
             }
-        }
+        },
+	{
+	    "id" : "output_genome",
+	    "optional" : false,
+	    "advanced" : false,
+	    "allow_multiple" : false,
+	    "default_values" : [ "mapped.genome" ],
+	    "field_type" : "text",
+	    "text_options" : {
+		"valid_ws_types" : [ "KBaseGenomes.Genome" ],
+		"is_output_name":true
+	    }
+	}
     ],
     "behavior": {
         "service-mapping": {
             "url": "",
             "name": "ElectronicAnnotationMethods",
-            "method": "filter_contigs",
+            "method": "interpro2go",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
-                    "target_property": "workspace"
+                    "target_property": "workspace_name"
                 },
                 {
-                    "input_parameter": "contigset_id",
-                    "target_property": "contigset_id"
+                    "input_parameter": "input_genome",
+                    "target_property": "input_genome_ref",
+                    "target_type_transform": "ref"
                 },
                 {
-                    "input_parameter": "min_length",
-                    "target_property": "min_length"
-                }
+                    "input_parameter": "ontology_translation",
+                    "target_property": "ontology_translation_ref",
+                    "target_type_transform": "ref"
+                },
+		{
+		    "input_parameter": "output_genome",
+          	    "target_property": "output_genome_name"
+		}
             ],
             "output_mapping": [
                 {
@@ -63,24 +81,12 @@
                     "target_property": "report_ref"
                 },
                 {
-                    "service_method_output_path": [0,"report_ref"],
-                    "target_property": "report_ref"
-                },
-                {
                     "constant_value": "5",
                     "target_property": "report_window_line_height"
                 },
                 {
                     "service_method_output_path": [0],
-                    "target_property": "contig_filter_result"
-                },
-                {
-                    "input_parameter": "contigset_id",
-                    "target_property": "input_contigset_id"
-                },
-                {
-                    "input_parameter": "min_length",
-                    "target_property": "input_min_length"
+                    "target_property": "electronic_annotation_result"
                 },
                 {
                     "narrative_system_variable": "workspace",
