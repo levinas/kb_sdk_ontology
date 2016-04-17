@@ -1,6 +1,6 @@
 /*
 A KBase module: ElectronicAnnotationMethods
-This module contains the following methods:
+This module wraps the following methods:
 
   InterPro2GO
   EC2GO
