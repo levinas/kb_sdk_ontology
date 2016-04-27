@@ -11,18 +11,18 @@ This module wraps the following methods:
 module ElectronicAnnotationMethods {
 
     /*
-        workspace_name - the name of the workspace for input/output
-        input_genome_ref - reference to the input genome object
-        ontology_translation_ref - optional reference to user specified ontology translation map
-        output_genome_name - the name of the mapped genome annotation object
+        workspace - the name of the workspace for input/output
+        input_genome - reference to the input genome object
+        ontology_translation - optional reference to user specified ontology translation map
+        output_genome - the name of the mapped genome annotation object
 
-        @optional ontology_translation_ref
+        @optional ontology_translation
     */
     typedef structure {
-        string workspace_name;
-        string input_genome_ref;
-        string ontology_translation_ref;
-        string output_genome_name;
+        string workspace;
+        string input_genome;
+        string ontology_translation;
+        string output_genome;
     } ElectronicAnnotationParams;
 
     typedef structure {
