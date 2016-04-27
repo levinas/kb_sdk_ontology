@@ -1,10 +1,16 @@
 #BEGIN_HEADER
 # The header block is where all import statments should live
+import os
+import subprocess
 import sys
 import traceback
 import uuid
 from pprint import pprint, pformat
 from biokbase.workspace.client import Workspace as workspaceService
+
+from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
 #END_HEADER
 
 
@@ -25,6 +31,15 @@ class ElectronicAnnotationMethods:
     #BEGIN_CLASS_HEADER
     # Class variables and functions can be defined in this block
     workspaceURL = None
+
+    def genome_to_protein_fasta(self, genome, fasta_file):
+        records = []
+        for feature in genome['features']:
+            record = SeqRecord(Seq(feature['protein_translation']),
+                               id=feature['id'], description=feature['function'])
+            records.append(record)
+        SeqIO.write(records, fasta_file, "fasta")
+
     #END_CLASS_HEADER
 
     # config contains contents of config file in a hash or None if it couldn't
@@ -32,6 +47,9 @@ class ElectronicAnnotationMethods:
     def __init__(self, config):
         #BEGIN_CONSTRUCTOR
         self.workspaceURL = config['workspace-url']
+        self.scratch = os.path.abspath(config['scratch'])
+        if not os.path.exists(self.scratch):
+            os.makedirs(self.scratch)
         #END_CONSTRUCTOR
         pass
 
@@ -77,8 +95,31 @@ class ElectronicAnnotationMethods:
 
         print('Got input genome data.')
 
+        # Step 3- Actually perform the intropro2go mapping operation
 
-        # Step 3- Actually perform the filter operation, saving the good contigs to a new list
+        # Create feature protein FASTA
+        fasta_name = 'protein.fa'
+        interpro_out = 'protein.tsv'
+        self.genome_to_protein_fasta(genome, fasta_name)
+        # print os.popen('cat '+fasta_name).read()
+
+        cmd = ['interproscan.sh',
+               '-i', fasta_name,
+               '-f', 'tsv',
+               '-o', interpro_out,
+               '--disable-precalc',
+               '-goterms', '-iprlookup', '-hm' ]
+
+        print('Run CMD: {}'.format(' '.join(cmd)))
+        p = subprocess.Popen(cmd,
+                             cwd = self.scratch, shell = False)
+                             # stdout = subprocess.PIPE,
+                             # stderr = subprocess.STDOUT, shell = False)
+
+        p.wait()
+        print('CMD return code: {}'.format(p.returncode))
+
+
         # good_contigs = []
         # n_total = 0;
         # n_remaining = 0;
