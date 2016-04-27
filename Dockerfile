@@ -13,7 +13,12 @@ RUN apt-get install libffi-dev libssl-dev
 RUN pip install --upgrade requests[security]
 
 # Install InterProScan
-
+RUN \
+    wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.18-57.0/interproscan-5.18-57.0-64-bit.tar.gz && \
+    tar xf interproscan-5.18-57.0-64-bit.tar.gz && \
+    mv interproscan-5.18-57.0 /kb/deployment/interproscan && \
+    echo 'export INTERPROSCAN_INSTALL=/kb/deployment/interproscan' >> /kb/deployment/user-env.sh && \
+    echo 'export PATH=$PATH:$INTERPROSCAN_INSTALL' >> /kb/deployment/user-env.sh
 
 
 # Copy local wrapper files, and build
