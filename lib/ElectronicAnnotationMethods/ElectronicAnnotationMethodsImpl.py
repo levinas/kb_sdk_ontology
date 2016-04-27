@@ -37,7 +37,7 @@ class ElectronicAnnotationMethods:
 
     def interpro2go(self, ctx, params):
         # ctx is the context object
-        # return variables are: returnVal
+        # return variables are: output
         #BEGIN interpro2go
 
         # Print statements to stdout/stderr are captured and available as the method log
@@ -184,22 +184,23 @@ class ElectronicAnnotationMethods:
 
         print('Saved Report: '+pformat(report_info))
 
-        returnVal = {
+        output = {
                 'report_name': reportName,
                 'report_ref': str(report_info[6]) + '/' + str(report_info[0]) + '/' + str(report_info[4]),
-                'new_genome_ref': str(info[6]) + '/'+str(info[0])+'/'+str(info[4])
-                # 'n_initial_contigs':n_total,
-                # 'n_contigs_removed':n_total-n_remaining,
-                # 'n_contigs_remaining':n_remaining
+                'output_genome_ref': str(info[6]) + '/'+str(info[0])+'/'+str(info[4])
+
+                # TODO: add more fields
+                # 'n_total_features':n_total,
+                # 'n_features_mapped':n_total-n_remaining
             }
 
-        print('Returning: '+pformat(returnVal))
+        print('Returning: '+pformat(output))
 
         #END interpro2go
 
         # At some point might do deeper type checking...
-        if not isinstance(returnVal, object):
+        if not isinstance(output, object):
             raise ValueError('Method interpro2go return value ' +
-                             'returnVal is not type object as required.')
+                             'output is not type object as required.')
         # return the results
-        return [returnVal]
+        return [output]
