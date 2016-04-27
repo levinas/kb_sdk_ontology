@@ -55,6 +55,7 @@ class ElectronicAnnotationMethods:
         input_genome = params['input_genome']
         if 'output_genome' not in params:
             raise ValueError('Parameter output_genome is not set in input arguments')
+        output_genome = params['output_genome']
 
 
         # Step 2- Download the input data
@@ -72,7 +73,7 @@ class ElectronicAnnotationMethods:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
             orig_error = ''.join('    ' + line for line in lines)
-            raise ValueError('Error loading input genome object from workspace:\n' + orig_error)
+            raise ValueError('Error loading input Genome object from workspace:\n' + orig_error)
 
         print('Got input genome data.')
 
