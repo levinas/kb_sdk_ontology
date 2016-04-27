@@ -53,40 +53,270 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
     def getContext(self):
         return self.__class__.ctx
 
-    def test_filter_contigs_ok(self):
-        obj_name = "contigset.1"
-        contig1 = {'id': '1', 'length': 10, 'md5': 'md5', 'sequence': 'agcttttcat'}
-        contig2 = {'id': '2', 'length': 5, 'md5': 'md5', 'sequence': 'agctt'}
-        contig3 = {'id': '3', 'length': 12, 'md5': 'md5', 'sequence': 'agcttttcatgg'}
-        obj1 = {'contigs': [contig1, contig2, contig3], 'id': 'id', 'md5': 'md5', 'name': 'name', 
-                'source': 'source', 'source_id': 'source_id', 'type': 'type'}
-        self.getWsClient().save_objects({'workspace': self.getWsName(), 'objects':
-            [{'type': 'KBaseGenomes.ContigSet', 'name': obj_name, 'data': obj1}]})
-        ret = self.getImpl().filter_contigs(self.getContext(), {'workspace': self.getWsName(), 
-            'contigset_id': obj_name, 'min_length': '10'})
-        obj2 = self.getWsClient().get_objects([{'ref': self.getWsName()+'/'+obj_name}])[0]['data']
-        self.assertEqual(len(obj2['contigs']), 2)
-        self.assertTrue(len(obj2['contigs'][0]['sequence']) >= 10)
-        self.assertTrue(len(obj2['contigs'][1]['sequence']) >= 10)
-        self.assertEqual(ret[0]['n_initial_contigs'], 3)
-        self.assertEqual(ret[0]['n_contigs_removed'], 1)
-        self.assertEqual(ret[0]['n_contigs_remaining'], 2)
+    def test_interpro2go_ok(self):
+        input_name = "genome.1"
+        output_name = "out.genome.1.interpro2go"
+        obj = self.get_test_genome_1()
+        workspace = self.getWsName()
+        self.getWsClient().save_objects({'workspace': workspace, 'objects':
+                                         [{'type': 'KBaseGenomes.Genome', 'name': input_name, 'data': obj}]})
+        ret = self.getImpl().interpro2go(self.getContext(),
+                                         {'workspace': workspace,
+                                          'input_genome': input_name, 'output_genome': output_name})
+        new_obj = self.getWsClient().get_objects([{'ref': workspace+'/'+output_name}])[0]['data']
+        print new_obj
 
-    def test_filter_contigs_err1(self):
-        with self.assertRaises(ValueError) as context:
-            self.getImpl().filter_contigs(self.getContext(), {'workspace': self.getWsName(), 
-                'contigset_id': 'fake', 'min_length': 10})
-        self.assertTrue('Error loading original ContigSet object' in str(context.exception))
 
-    def test_filter_contigs_err2(self):
-        with self.assertRaises(ValueError) as context:
-            self.getImpl().filter_contigs(self.getContext(), {'workspace': self.getWsName(), 
-                'contigset_id': 'fake', 'min_length': '-10'})
-        self.assertTrue('min_length parameter shouldn\'t be negative' in str(context.exception))
+        # contig1 = {'id': '1', 'length': 10, 'md5': 'md5', 'sequence': 'agcttttcat'}
+        # contig2 = {'id': '2', 'length': 5, 'md5': 'md5', 'sequence': 'agctt'}
+        # contig3 = {'id': '3', 'length': 12, 'md5': 'md5', 'sequence': 'agcttttcatgg'}
+        # obj1 = {'contigs': [contig1, contig2, contig3], 'id': 'id', 'md5': 'md5', 'name': 'name',
+        #         'source': 'source', 'source_id': 'source_id', 'type': 'type'}
+        # self.getWsClient().save_objects({'workspace': self.getWsName(), 'objects':
+        #     [{'type': 'KBaseGenomes.ContigSet', 'name': obj_name, 'data': obj1}]})
+        # ret = self.getImpl().filter_contigs(self.getContext(), {'workspace': self.getWsName(),
+        #     'contigset_id': obj_name, 'min_length': '10'})
+        # obj2 = self.getWsClient().get_objects([{'ref': self.getWsName()+'/'+obj_name}])[0]['data']
+        # self.assertEqual(len(obj2['contigs']), 2)
+        # self.assertTrue(len(obj2['contigs'][0]['sequence']) >= 10)
+        # self.assertTrue(len(obj2['contigs'][1]['sequence']) >= 10)
+        # self.assertEqual(ret[0]['n_initial_contigs'], 3)
+        # self.assertEqual(ret[0]['n_contigs_removed'], 1)
+        # self.assertEqual(ret[0]['n_contigs_remaining'], 2)
 
-    def test_filter_contigs_err3(self):
-        with self.assertRaises(ValueError) as context:
-            self.getImpl().filter_contigs(self.getContext(), {'workspace': self.getWsName(), 
-                'contigset_id': 'fake', 'min_length': 'ten'})
-        self.assertTrue('Cannot parse integer from min_length parameter' in str(context.exception))
-        
+    def get_test_genome_1(self):
+        obj_json = '''
+{
+    "complete": 0,
+    "contig_ids": [
+        "kb|g.960.c.1",
+        "kb|g.960.c.2"
+    ],
+    "contig_lengths": [
+        3768,
+        4083
+    ],
+    "dna_size": 5206906,
+    "domain": "Bacteria",
+    "features": [
+        {
+            "aliases": [
+                "ZP_00721180.1",
+                "EcolF_01003998",
+                "75237130",
+                "COG2207",
+                "2458280"
+            ],
+            "annotations": [
+                [
+                    "Multiple antibiotic resistance protein MarA",
+                    "claudia",
+                    1200689353
+                ],
+                [
+                    "Set function to COG4776: Exoribonuclease II",
+                    "ncbi",
+                    1149627647
+                ],
+                [
+                    "Set function to Multiple antibiotic resistance protein MarA",
+                    "claudia",
+                    1200689353
+                ]
+            ],
+            "co_occurring_fids": [
+                [
+                    "kb|g.960.peg.3078",
+                    33
+                ],
+                [
+                    "kb|g.960.peg.3442",
+                    6
+                ],
+                [
+                    "kb|g.960.peg.3495",
+                    5
+                ],
+                [
+                    "kb|g.960.peg.3756",
+                    6
+                ],
+                [
+                    "kb|g.960.peg.3890",
+                    7
+                ]
+            ],
+            "dna_sequence": "atgacgatgtccagacgcaatactgacgctattaccattcatagcattttggactggatcgaggacaacctggaatcgccactttcactggagaaagtgtcagagcgttcgggttactccaaatggcacctgcaacggatgtttaaaaaagaaaccggtcattcattaggtcaatacatccgtagccgtaagatgacggaaatcgcgcaaaagctgaaggaaagtaacgagccgatactctatctggcagaacgatatggctttgagtcccaacaaactctgacccgaaccttcaaaaattactttgatgttccgccgcataaataccggatgaccaatatgcaaggtgaatcgcgttttttacatccattaaatcattacaacaactag",
+            "dna_sequence_length": 390,
+            "function": "Multiple antibiotic resistance protein MarA",
+            "id": "kb|g.960.peg.3275",
+            "location": [
+                [
+                    "kb|g.960.c.3",
+                    11339,
+                    "-",
+                    390
+                ]
+            ],
+            "md5": "45a87821a445ae8b2a8c436a1aae94e1",
+            "protein_families": [
+                {
+                    "id": "FIG00004085",
+                    "release_version": "Release59",
+                    "subject_db": "FIGfam",
+                    "subject_description": "Multiple antibiotic resistance protein MarA"
+                }
+            ],
+            "protein_translation": "MTMSRRNTDAITIHSILDWIEDNLESPLSLEKVSERSGYSKWHLQRMFKKETGHSLGQYIRSRKMTEIAQKLKESNEPILYLAERYGFESQQTLTRTFKNYFDVPPHKYRMTNMQGESRFLHPLNHYNN",
+            "protein_translation_length": 129,
+            "type": "CDS"
+        },
+        {
+            "aliases": [
+                "ZP_00724853.1",
+                "EcolF_01002034",
+                "75240964",
+                "COG4988",
+                "2456354"
+            ],
+            "annotations": [
+                [
+                    "Function set by OlgaV at 1233268189 Transport ATP-binding protein CydD",
+                    "OlgaV",
+                    1233268189
+                ],
+                [
+                    "Role changed from 'Transport ATP-binding protein cydD' to 'Transport ATP-binding protein CydD'",
+                    "OlgaV",
+                    1233268189
+                ],
+                [
+                    "Set function to hypothetical protein",
+                    "ncbi",
+                    1149627647
+                ],
+                [
+                    "Set function to Transport ATP-binding protein CydD",
+                    "OlgaV",
+                    1233268189
+                ]
+            ],
+            "co_occurring_fids": [
+                [
+                    "kb|g.960.peg.1088",
+                    31
+                ],
+                [
+                    "kb|g.960.peg.1187",
+                    21
+                ],
+                [
+                    "kb|g.960.peg.1489",
+                    15
+                ],
+                [
+                    "kb|g.960.peg.1528",
+                    37
+                ],
+                [
+                    "kb|g.960.peg.1550",
+                    22
+                ],
+                [
+                    "kb|g.960.peg.1794",
+                    145
+                ],
+                [
+                    "kb|g.960.peg.1904",
+                    21
+                ]
+            ],
+            "dna_sequence": "atgaataaatcccgtcaaaaagaattaacccgctggttaaaacagcaaagcgtcatctcccaacgttggctgaatatttctcgtctgctgggctttgtgagcggcatattgatcattgcccaggcctggttcatggcgcgaattctgcaacatatgattatggagaatattccccgtgaagccctgctgcttccctttacgttactgtttctgacctttgtactgcgcgcatgggtggtctggttacgcgaacgggtgggttatcacgccgggcagcatatccgctttgccatccgccgtcaggttctcgaccgtctgcaacaagcagggccagcgtggattcagggtaaacctgcggggagctgggcgacgctggtgctcgagcaaattgacgatatgcatgattactatgcacgctacctgccgcaaatggcgctggcagtgtcggtgccgctgctgattgtggtggctatcttcccctctaactgggctgcggcgctcattctgctgggcactgcaccgctaattccgttatttatggcgctggttggaatgggggctgccgatgctaaccgacgtaactttctcgctcttgctcgcttaagtgggcatttcctcgatcgcctgcgcggcatggaaacattgcgtatttttggtcgtggtgaagctgaaattgaaagtattcgttctgcttcggaagatttccgccaacggacaatggaagtgctacggctggcgtttttatcctccggcattctcgaattttttacctcgctgtcgattgctctggtggcgatctactttggtttttcctacctcggcgagctggattttggtcactacgatactggtgtgacgctggctgcgggttttctagccctgatccttgcgccagagtttttccagccattacgcgatctcggtacgttttatcatgctaaagcccaggctgttggtgcagctgacagtttgaaaacgtttatggaaaccccgctcgcccatccgcagcgcggtgaggcggaattagcatcgaccgatccggtgaccattgaagccgaggatctgtttatcacgtcgccggaaggtaaaacgctggccggaccgctgaattttactttgccagcaggccaacgagcagtgttggttggtcgcagcggttcaggtaaaagttcactgttgaacgcgctttctggttttctctcatatcagggatcgctacgaatcaacgggatagaattacgcgatttatcaccggaatcatggcgtaaacatctctcctgggttgggcaaaacccacaattaccggcagcaacattacgggataacgtactactggcgcgacctgatgccagcgaacaagagttacaaacagcgctggataacgcctgggtcagtgagtttctaccgctcctgccgcaaggcattgatacgcctgttggtgaccaggctgcccgcctttccgtggggcaggcgcagcgcgtggcggtggcccgtgcgttactaaatccctgttcgctattactgttggatgaacccgctgccagccttgatgctcacagtgaacagcgcgtaatggaggcgctgaatgccgcctctctgcgccagacaacgttaatggtcacccaccagttagaagatcttgctgactgggatgtcatttgggtaatgcaggatggtcagattattgagcaaggacgttacgcggaattaagtgtggctggcggcccattcgccacattactggcccatcgtcaggaggagatttaa",
+            "dna_sequence_length": 1767,
+            "function": "Transport ATP-binding protein CydD",
+            "id": "kb|g.960.peg.1735",
+            "location": [
+                [
+                    "kb|g.960.c.22",
+                    53155,
+                    "-",
+                    1767
+                ]
+            ],
+            "md5": "348e67aaaf651fb48ac5d36b724b1472",
+            "protein_families": [
+                {
+                    "id": "FIG01010650",
+                    "release_version": "Release59",
+                    "subject_db": "FIGfam",
+                    "subject_description": "Transport ATP-binding protein CydD"
+                }
+            ],
+            "protein_translation": "MNKSRQKELTRWLKQQSVISQRWLNISRLLGFVSGILIIAQAWFMARILQHMIMENIPREALLLPFTLLFLTFVLRAWVVWLRERVGYHAGQHIRFAIRRQVLDRLQQAGPAWIQGKPAGSWATLVLEQIDDMHDYYARYLPQMALAVSVPLLIVVAIFPSNWAAALILLGTAPLIPLFMALVGMGAADANRRNFLALARLSGHFLDRLRGMETLRIFGRGEAEIESIRSASEDFRQRTMEVLRLAFLSSGILEFFTSLSIALVAIYFGFSYLGELDFGHYDTGVTLAAGFLALILAPEFFQPLRDLGTFYHAKAQAVGAADSLKTFMETPLAHPQRGEAELASTDPVTIEAEDLFITSPEGKTLAGPLNFTLPAGQRAVLVGRSGSGKSSLLNALSGFLSYQGSLRINGIELRDLSPESWRKHLSWVGQNPQLPAATLRDNVLLARPDASEQELQTALDNAWVSEFLPLLPQGIDTPVGDQAARLSVGQAQRVAVARALLNPCSLLLLDEPAASLDAHSEQRVMEALNAASLRQTTLMVTHQLEDLADWDVIWVMQDGQIIEQGRYAELSVAGGPFATLLAHRQEEI",
+            "protein_translation_length": 588,
+            "type": "CDS"
+        },
+        {
+            "aliases": [
+                "ZP_00724505.1",
+                "EcolF_01002306",
+                "75240588",
+                "COG2920",
+                "2456622"
+            ],
+            "annotations": [
+                [
+                    "Set function to COG3101: Uncharacterized protein conserved in bacteria",
+                    "ncbi",
+                    1149627647
+                ],
+                [
+                    "Set function to tRNA 2-thiouridine synthesizing protein E (EC 2.8.1.-)",
+                    "gjo",
+                    1197143618
+                ]
+            ],
+            "co_occurring_fids": [
+                [
+                    "kb|g.960.peg.1985",
+                    19
+                ]
+            ],
+            "dna_sequence": "atgctgatcttcgaaggtaaagagatagaaacggataccgaaggctatctcaaagaaagcagccagtggagtgagccactggcggtggtgattgcagagaacgaagggattgcgctgtcgccagaacactgggaagtggtgcgttttgtgcgtgatttctatctggaattcaatacttctccggcgattcgtatgctggtaaaagcgatggcgaataaatttggcgaagagaaaggcaatagccgctatctgtaccgactgttcccgaaaggtccggcaaagcaagccaccaaaattgctggcctgcctaaaccggtaaaatgcatttaa",
+            "dna_sequence_length": 330,
+            "function": "tRNA 2-thiouridine synthesizing protein E (EC 2.8.1.-)",
+            "id": "kb|g.960.peg.1028",
+            "location": [
+                [
+                    "kb|g.960.c.65",
+                    5575,
+                    "-",
+                    330
+                ]
+            ],
+            "md5": "2748c3ad89a8a5e27fc4dabd6075d5c4",
+            "protein_families": [
+                {
+                    "id": "FIG00141658",
+                    "release_version": "Release59",
+                    "subject_db": "FIGfam",
+                    "subject_description": "Putative sulfite reductase, gamma subunit (EC 1.8.99.3)"
+                }
+            ],
+            "protein_translation": "MLIFEGKEIETDTEGYLKESSQWSEPLAVVIAENEGIALSPEHWEVVRFVRDFYLEFNTSPAIRMLVKAMANKFGEEKGNSRYLYRLFPKGPAKQATKIAGLPKPVKCI",
+            "protein_translation_length": 109,
+            "type": "CDS"
+        }
+    ],
+    "gc_content": 50.4968209527885,
+    "genetic_code": 11,
+    "id": "kb|g.960",
+    "md5": "2618042895ad48071fde3fa8e5728928",
+    "num_contigs": 88,
+    "scientific_name": "Escherichia coli F11 partial",
+    "source": "KBase Central Store",
+    "source_id": "340197.3",
+    "taxonomy": "Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacteriales; Enterobacteriaceae; Escherichia; Escherichia coli F11"
+}
+'''
+        return json.loads(obj_json)
