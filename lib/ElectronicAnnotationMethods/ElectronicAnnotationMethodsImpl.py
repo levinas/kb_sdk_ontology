@@ -13,9 +13,9 @@ class ElectronicAnnotationMethods:
     Module Name:
     ElectronicAnnotationMethods
     Module Description:
-    
+
     '''
-    
+
     ######## WARNING FOR GEVENT USERS #######
     # Since asynchronous IO can lead to methods - even the same method -
     # interrupting each other, you must be *very* careful when using global
@@ -26,7 +26,7 @@ class ElectronicAnnotationMethods:
     # Class variables and functions can be defined in this block
     workspaceURL = None
     #END_CLASS_HEADER
-    
+
     # config contains contents of config file in a hash or None if it couldn't
     # be found
     def __init__(self, config):
@@ -35,14 +35,14 @@ class ElectronicAnnotationMethods:
         #END_CONSTRUCTOR
         pass
 
-    def filter_contigs(self, ctx, params):
+    def interpro2go(self, ctx, params):
         # ctx is the context object
         # return variables are: returnVal
-        #BEGIN filter_contigs
-        
+        #BEGIN interpro2go
+
         # Print statements to stdout/stderr are captured and available as the method log
-        print('Starting filter contigs method.')
-        
+        print('Starting interpro2go method...')
+
 
         # Step 1 - Parse/examine the parameters and catch any errors
         # It is important to check that parameters exist and are defined, and that nice error
@@ -50,58 +50,51 @@ class ElectronicAnnotationMethods:
         if 'workspace' not in params:
             raise ValueError('Parameter workspace is not set in input arguments')
         workspace_name = params['workspace']
-        if 'contigset_id' not in params:
-            raise ValueError('Parameter contigset_id is not set in input arguments')
-        contigset_id = params['contigset_id']
-        if 'min_length' not in params:
-            raise ValueError('Parameter min_length is not set in input arguments')
-        min_length_orig = params['min_length']
-        min_length = None
-        try:
-            min_length = int(min_length_orig)
-        except ValueError:
-            raise ValueError('Cannot parse integer from min_length parameter (' + str(min_length_orig) + ')')
-        if min_length < 0:
-            raise ValueError('min_length parameter shouldn\'t be negative (' + str(min_length) + ')')
-        
+        if 'input_genome' not in params:
+            raise ValueError('Parameter input_genome is not set in input arguments')
+        input_genome = params['input_genome']
+        if 'output_genome' not in params:
+            raise ValueError('Parameter output_genome is not set in input arguments')
+
 
         # Step 2- Download the input data
         # Most data will be based to your method by its workspace name.  Use the workspace to pull that data
         # (or in many cases, subsets of that data).  The user token is used to authenticate with the KBase
         # data stores and other services.  DO NOT PRINT OUT OR OTHERWISE SAVE USER TOKENS
         token = ctx['token']
-        wsClient = workspaceService(self.workspaceURL, token=token) 
-        try: 
+        wsClient = workspaceService(self.workspaceURL, token=token)
+        try:
             # Note that results from the workspace are returned in a list, and the actual data is saved
             # in the 'data' key.  So to get the ContigSet data, we get the first element of the list, and
             # look at the 'data' field.
-            contigSet = wsClient.get_objects([{'ref': workspace_name+'/'+contigset_id}])[0]['data']
+            genome = wsClient.get_objects([{'ref': workspace_name+'/'+input_genome}])[0]['data']
         except:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
             orig_error = ''.join('    ' + line for line in lines)
-            raise ValueError('Error loading original ContigSet object from workspace:\n' + orig_error)
-        
-        print('Got ContigSet data.')
-        
+            raise ValueError('Error loading input genome object from workspace:\n' + orig_error)
+
+        print('Got input genome data.')
+
 
         # Step 3- Actually perform the filter operation, saving the good contigs to a new list
-        good_contigs = []
-        n_total = 0;
-        n_remaining = 0;
-        for contig in contigSet['contigs']:
-            n_total += 1
-            if len(contig['sequence']) >= min_length:
-                good_contigs.append(contig)
-                n_remaining += 1
+        # good_contigs = []
+        # n_total = 0;
+        # n_remaining = 0;
+        # for contig in contigSet['contigs']:
+        #     n_total += 1
+        #     if len(contig['sequence']) >= min_length:
+        #         good_contigs.append(contig)
+        #         n_remaining += 1
 
         # replace the contigs in the contigSet object in local memory
-        contigSet['contigs'] = good_contigs
-        
-        print('Filtered ContigSet to '+str(n_remaining)+' contigs out of '+str(n_total))
-        
+        # contigSet['contigs'] = good_contigs
 
-        # Step 4- Save the new ContigSet back to the Workspace
+        # print('Filtered ContigSet to '+str(n_remaining)+' contigs out of '+str(n_total))
+
+        print('Here is where the ontology mapping work.')
+
+        # Step 4- Save the new Genome back to the Workspace
         # When objects are saved, it is important to always set the Provenance of that object.  The basic
         # provenance info is given to you as part of the context object.  You can add additional information
         # to the provenance as necessary.  Here we keep a pointer to the input data object.
@@ -109,7 +102,7 @@ class ElectronicAnnotationMethods:
         if 'provenance' in ctx:
             provenance = ctx['provenance']
         # add additional info to provenance here, in this case the input data object reference
-        provenance[0]['input_ws_objects']=[workspace_name+'/'+contigset_id]
+        provenance[0]['input_ws_objects']=[workspace_name+'/'+input_genome]
 
         obj_info_list = None
         try:
@@ -117,9 +110,9 @@ class ElectronicAnnotationMethods:
 	                            'workspace':workspace_name,
 	                            'objects': [
 	                                {
-	                                    'type':'KBaseGenomes.ContigSet',
-	                                    'data':contigSet,
-	                                    'name':contigset_id,
+	                                    'type':'KBaseGenomes.Genome',
+	                                    'data':genome,
+	                                    'name':output_genome,
 	                                    'provenance':provenance
 	                                }
 	                            ]
@@ -128,8 +121,8 @@ class ElectronicAnnotationMethods:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
             orig_error = ''.join('    ' + line for line in lines)
-            raise ValueError('Error saving filtered ContigSet object to workspace:\n' + orig_error)
-        
+            raise ValueError('Error saving output Genome object to workspace:\n' + orig_error)
+
         info = obj_info_list[0]
         # Workspace Object Info is a tuple defined as-
         # absolute ref = info[6] + '/' + info[0] + '/' + info[4]
@@ -145,26 +138,26 @@ class ElectronicAnnotationMethods:
         # 9 - int size - size of the json content
         # 10 - usermeta meta - dictionary of string keys/values of user set or auto generated metadata
 
-        print('saved ContigSet:'+pformat(info))
+        print('Saved output Genome:'+pformat(info))
 
 
         # Step 5- Create the Report for this method, and return the results
         # Create a Report of the method
-        report = 'New ContigSet saved to: '+str(info[7]) + '/'+str(info[1])+'/'+str(info[4])+'\n'
-        report += 'Number of initial contigs:      '+ str(n_total) + '\n'
-        report += 'Number of contigs removed:      '+ str(n_total - n_remaining) + '\n'
-        report += 'Number of contigs in final set: '+ str(n_remaining) + '\n'
+        report = 'New Genome saved to: '+str(info[7]) + '/'+str(info[1])+'/'+str(info[4])+'\n'
+        # report += 'Number of initial contigs:      '+ str(n_total) + '\n'
+        # report += 'Number of contigs removed:      '+ str(n_total - n_remaining) + '\n'
+        # report += 'Number of contigs in final set: '+ str(n_remaining) + '\n'
 
         reportObj = {
             'objects_created':[{
-                    'ref':str(info[6]) + '/'+str(info[0])+'/'+str(info[4]), 
-                    'description':'Filtered Contigs'
+                    'ref':str(info[6]) + '/'+str(info[0])+'/'+str(info[4]),
+                    'description':'Genome with annotation mapped using interpro2go'
                 }],
             'text_message':report
         }
 
         # generate a unique name for the Method report
-        reportName = 'filter_contigs_report_'+str(hex(uuid.getnode()))
+        reportName = 'interpro2go_report_'+str(hex(uuid.getnode()))
         report_info_list = None
         try:
             report_info_list = wsClient.save_objects({
@@ -184,28 +177,28 @@ class ElectronicAnnotationMethods:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
             orig_error = ''.join('    ' + line for line in lines)
-            raise ValueError('Error saving filtered ContigSet object to workspace:\n' + orig_error)
-        
+            raise ValueError('Error saving report object to workspace:\n' + orig_error)
+
         report_info = report_info_list[0]
 
-        print('saved Report: '+pformat(report_info))
+        print('Saved Report: '+pformat(report_info))
 
         returnVal = {
                 'report_name': reportName,
                 'report_ref': str(report_info[6]) + '/' + str(report_info[0]) + '/' + str(report_info[4]),
-                'new_contigset_ref': str(info[6]) + '/'+str(info[0])+'/'+str(info[4]),
-                'n_initial_contigs':n_total,
-                'n_contigs_removed':n_total-n_remaining,
-                'n_contigs_remaining':n_remaining
+                'new_genome_ref': str(info[6]) + '/'+str(info[0])+'/'+str(info[4])
+                # 'n_initial_contigs':n_total,
+                # 'n_contigs_removed':n_total-n_remaining,
+                # 'n_contigs_remaining':n_remaining
             }
-        
-        print('returning:'+pformat(returnVal))
-                
-        #END filter_contigs
-        
+
+        print('Returning: '+pformat(returnVal))
+
+        #END interpro2go
+
         # At some point might do deeper type checking...
         if not isinstance(returnVal, object):
-            raise ValueError('Method count_contigs return value ' +
+            raise ValueError('Method interpro2go return value ' +
                              'returnVal is not type object as required.')
         # return the results
         return [returnVal]

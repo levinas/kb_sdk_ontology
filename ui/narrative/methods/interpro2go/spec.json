@@ -54,21 +54,19 @@
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
-                    "target_property": "workspace_name"
+                    "target_property": "workspace"
                 },
                 {
                     "input_parameter": "input_genome",
-                    "target_property": "input_genome_ref",
-                    "target_type_transform": "ref"
+                    "target_property": "input_genome"
                 },
                 {
                     "input_parameter": "ontology_translation",
-                    "target_property": "ontology_translation_ref",
-                    "target_type_transform": "ref"
+                    "target_property": "ontology_translation"
                 },
 		{
 		    "input_parameter": "output_genome",
-          	    "target_property": "output_genome_name"
+          	    "target_property": "output_genome"
 		}
             ],
             "output_mapping": [
