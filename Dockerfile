@@ -13,7 +13,7 @@ RUN apt-get install libffi-dev libssl-dev
 RUN pip install --upgrade requests[security]
 RUN apt-add-repository ppa:webupd8team/java
 RUN apt-get update
-RUN apt-get install -y oracle-java8-installer
+RUN apt-get -q install -y oracle-java8-installer
 
 # Install InterProScan
 RUN \
