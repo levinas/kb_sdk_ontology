@@ -1,8 +1,10 @@
 #BEGIN_HEADER
 # The header block is where all import statments should live
+import csv
 import os
 import subprocess
 import sys
+import time
 import traceback
 import uuid
 from pprint import pprint, pformat
@@ -68,12 +70,16 @@ class ElectronicAnnotationMethods:
         if 'workspace' not in params:
             raise ValueError('Parameter workspace is not set in input arguments')
         workspace_name = params['workspace']
+
         if 'input_genome' not in params:
             raise ValueError('Parameter input_genome is not set in input arguments')
         input_genome = params['input_genome']
+
         if 'output_genome' not in params:
             raise ValueError('Parameter output_genome is not set in input arguments')
         output_genome = params['output_genome']
+
+        ontology_translation = params.get('ontology_translation')
 
 
         # Step 2- Download the input data
@@ -95,46 +101,72 @@ class ElectronicAnnotationMethods:
 
         print('Got input genome data.')
 
+        # Load translation object from default or user-specified table
+        translation_ws = workspace_name
+        translation_name = ontology_translation
+        if not translation_name:
+            translation_ws = 'KBaseOntology'
+            translation_name = 'interpro2go'
+        try:
+            translation = wsClient.get_objects([{'ref': translation_ws+'/'+translation_name}])[0]['data']
+        except:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+            orig_error = ''.join('    ' + line for line in lines)
+            raise ValueError('Error loading OntologyTranslation object from workspace:\n' + orig_error)
+
+        trans = translation['translation']
+        print('Got translation table from {}/{}.'.format(translation_ws, translation_name))
+
         # Step 3- Actually perform the intropro2go mapping operation
 
-        # Create feature protein FASTA
-        fasta_name = 'protein.fa'
-        interpro_out = 'protein.tsv'
-        self.genome_to_protein_fasta(genome, fasta_name)
-        # print os.popen('cat '+fasta_name).read()
+        # Create feature protein FASTA as input for interproscan
+        fasta_path = os.path.join(self.scratch, 'protein.fa')
+        interpro_out = os.path.join(self.scratch, 'protein.tsv')
+        self.genome_to_protein_fasta(genome, fasta_path)
 
+        # Run interproscan in standalone mode
         cmd = ['interproscan.sh',
-               '-i', fasta_name,
+               '-i', fasta_path,
                '-f', 'tsv',
                '-o', interpro_out,
                '--disable-precalc',
-               '-goterms', '-iprlookup', '-hm' ]
+               '-goterms',
+               '-iprlookup', '-hm' ]
 
         print('Run CMD: {}'.format(' '.join(cmd)))
-        p = subprocess.Popen(cmd,
-                             cwd = self.scratch, shell = False)
-                             # stdout = subprocess.PIPE,
-                             # stderr = subprocess.STDOUT, shell = False)
-
+        p = subprocess.Popen(cmd, cwd = self.scratch, shell = False)
         p.wait()
         print('CMD return code: {}'.format(p.returncode))
 
+        # Add GO terms to Genome object
+        fid_to_go = {}
+        with open(interpro_out, 'r') as tsv:
+            tsv = csv.reader(tsv, delimiter='\t')
+            for row in tsv:
+                if len(row) < 12:
+                    continue
+                fid, beg, end, domain = row[0], row[6], row[7], row[11]
+                # orig_go_terms = None
+                # if len(row) >= 14:
+                    # orig_go_terms = row[13]
+                go_terms = None
+                key = 'InterPro:'+domain
+                equiv_terms = trans.get(key)
+                if equiv_terms:
+                    go_terms = '|'.join(sorted(map(lambda x: x['equiv_term'], equiv_terms['equiv_terms'])))
+                    fid_to_go[fid] = go_terms
 
-        # good_contigs = []
-        # n_total = 0;
-        # n_remaining = 0;
-        # for contig in contigSet['contigs']:
-        #     n_total += 1
-        #     if len(contig['sequence']) >= min_length:
-        #         good_contigs.append(contig)
-        #         n_remaining += 1
-
-        # replace the contigs in the contigSet object in local memory
-        # contigSet['contigs'] = good_contigs
-
-        # print('Filtered ContigSet to '+str(n_remaining)+' contigs out of '+str(n_total))
-
-        print('Here is where the ontology mapping work.')
+        n_total_features = 0
+        n_features_mapped = 0
+        for fea in genome['features']:
+            fid = fea['id']
+            n_total_features += 1
+            if fid in fid_to_go:
+                anno = fea['annotations'] if 'annotations' in fea else []
+                anno.append([fid_to_go[fid], 'interpro2go', int(time.time())])
+                n_features_mapped += 1
+                print('Mapped {} to {}.'.format(fid, fid_to_go[fid]))
 
         # Step 4- Save the new Genome back to the Workspace
         # When objects are saved, it is important to always set the Provenance of that object.  The basic
@@ -186,9 +218,8 @@ class ElectronicAnnotationMethods:
         # Step 5- Create the Report for this method, and return the results
         # Create a Report of the method
         report = 'New Genome saved to: '+str(info[7]) + '/'+str(info[1])+'/'+str(info[4])+'\n'
-        # report += 'Number of initial contigs:      '+ str(n_total) + '\n'
-        # report += 'Number of contigs removed:      '+ str(n_total - n_remaining) + '\n'
-        # report += 'Number of contigs in final set: '+ str(n_remaining) + '\n'
+        report += 'Number of total features: '+ str(n_total_features) + '\n'
+        report += 'Number of features mapped to GO terms: '+ str(n_features_mapped) + '\n'
 
         reportObj = {
             'objects_created':[{
@@ -228,11 +259,9 @@ class ElectronicAnnotationMethods:
         output = {
                 'report_name': reportName,
                 'report_ref': str(report_info[6]) + '/' + str(report_info[0]) + '/' + str(report_info[4]),
-                'output_genome_ref': str(info[6]) + '/'+str(info[0])+'/'+str(info[4])
-
-                # TODO: add more fields
-                # 'n_total_features':n_total,
-                # 'n_features_mapped':n_total-n_remaining
+                'output_genome_ref': str(info[6]) + '/'+str(info[0])+'/'+str(info[4]),
+                'n_total_features':n_total_features,
+                'n_features_mapped':n_features_mapped
             }
 
         print('Returning: '+pformat(output))

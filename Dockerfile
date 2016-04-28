@@ -17,7 +17,8 @@ RUN apt-get install -y oracle-java8-installer
 
 # Install InterProScan
 RUN \
-    wget ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.18-57.0/interproscan-5.18-57.0-64-bit.tar.gz && \
+    echo 'Downloading big interproscan file...' && \
+    wget -nv ftp://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/5.18-57.0/interproscan-5.18-57.0-64-bit.tar.gz && \
     tar xf interproscan-5.18-57.0-64-bit.tar.gz && \
     mv interproscan-5.18-57.0 /kb/deployment/interproscan && \
     echo 'export INTERPROSCAN_INSTALL=/kb/deployment/interproscan' >> /kb/deployment/user-env.sh && \
