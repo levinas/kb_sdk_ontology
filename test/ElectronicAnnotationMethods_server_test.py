@@ -60,12 +60,11 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
         workspace = self.getWsName()
         self.getWsClient().save_objects({'workspace': workspace, 'objects':
                                          [{'type': 'KBaseGenomes.Genome', 'name': input_name, 'data': obj}]})
-        ret = self.getImpl().interpro2go(self.getContext(),
-                                         {'workspace': workspace,
-                                          'input_genome': input_name, 'output_genome': output_name})
+        ret = self.getImpl().remap_annotations_with_interpro2go(self.getContext(),
+                                                                {'workspace': workspace,
+                                                                 'input_genome': input_name, 'output_genome': output_name})
         new_obj = self.getWsClient().get_objects([{'ref': workspace+'/'+output_name}])[0]['data']
         print new_obj
-
 
         # contig1 = {'id': '1', 'length': 10, 'md5': 'md5', 'sequence': 'agcttttcat'}
         # contig2 = {'id': '2', 'length': 5, 'md5': 'md5', 'sequence': 'agctt'}
@@ -83,6 +82,21 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
         # self.assertEqual(ret[0]['n_initial_contigs'], 3)
         # self.assertEqual(ret[0]['n_contigs_removed'], 1)
         # self.assertEqual(ret[0]['n_contigs_remaining'], 2)
+
+
+    def test_ec2go_ok(self):
+        input_name = "genome.1"
+        output_name = "out.genome.1.ec2go"
+        obj = self.get_test_genome_1()
+        workspace = self.getWsName()
+        self.getWsClient().save_objects({'workspace': workspace, 'objects':
+                                         [{'type': 'KBaseGenomes.Genome', 'name': input_name, 'data': obj}]})
+        ret = self.getImpl().remap_annotations_with_ec2go(self.getContext(),
+                                                          {'workspace': workspace,
+                                                           'input_genome': input_name, 'output_genome': output_name})
+        new_obj = self.getWsClient().get_objects([{'ref': workspace+'/'+output_name}])[0]['data']
+        print new_obj
+
 
     def get_test_genome_1(self):
         obj_json = '''
@@ -254,6 +268,94 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
             ],
             "protein_translation": "MNKSRQKELTRWLKQQSVISQRWLNISRLLGFVSGILIIAQAWFMARILQHMIMENIPREALLLPFTLLFLTFVLRAWVVWLRERVGYHAGQHIRFAIRRQVLDRLQQAGPAWIQGKPAGSWATLVLEQIDDMHDYYARYLPQMALAVSVPLLIVVAIFPSNWAAALILLGTAPLIPLFMALVGMGAADANRRNFLALARLSGHFLDRLRGMETLRIFGRGEAEIESIRSASEDFRQRTMEVLRLAFLSSGILEFFTSLSIALVAIYFGFSYLGELDFGHYDTGVTLAAGFLALILAPEFFQPLRDLGTFYHAKAQAVGAADSLKTFMETPLAHPQRGEAELASTDPVTIEAEDLFITSPEGKTLAGPLNFTLPAGQRAVLVGRSGSGKSSLLNALSGFLSYQGSLRINGIELRDLSPESWRKHLSWVGQNPQLPAATLRDNVLLARPDASEQELQTALDNAWVSEFLPLLPQGIDTPVGDQAARLSVGQAQRVAVARALLNPCSLLLLDEPAASLDAHSEQRVMEALNAASLRQTTLMVTHQLEDLADWDVIWVMQDGQIIEQGRYAELSVAGGPFATLLAHRQEEI",
             "protein_translation_length": 588,
+            "type": "CDS"
+        },
+        {
+            "aliases": [
+                "ZP_00723503.1",
+                "EcolF_01003038",
+                "75239533",
+                "COG0527",
+                "2457342"
+            ],
+            "annotations": [
+                [
+                    "Set function to hypothetical protein",
+                    "ncbi",
+                    1149627647
+                ]
+            ],
+            "co_occurring_fids": [
+                [
+                    "kb|g.960.peg.2008",
+                    16
+                ],
+                [
+                    "kb|g.960.peg.2207",
+                    139
+                ],
+                [
+                    "kb|g.960.peg.2343",
+                    295
+                ],
+                [
+                    "kb|g.960.peg.2496",
+                    11
+                ],
+                [
+                    "kb|g.960.peg.2555",
+                    16
+                ],
+                [
+                    "kb|g.960.peg.2608",
+                    38
+                ]
+            ],
+            "dna_sequence": "atgcgagtgttgaagttcggcggtacatcagtggcaaatgcagaacgttttctgcgggttgccgatattctggaaagcaatgccaggcaggggcaggtggccaccgtcctctctgcccccgccaaaatcaccaaccatctggtagcgatgattgaaaaaaccattagcggtcaggatgctttacccaatatcagcgatgccgaacgtatttttgccgaacttctgacgggactcgccgccgcccagccgggatttccgctggcacaattgaaaactttcgtcgaccaggaatttgcccaaataaaacatgtcctgcatggcatcagtttgttggggcagtgcccggatagcatcaacgctgcgctgatttgccgtggcgagaaaatgtcgatcgccattatggccggcgtgttagaagcgcgtggtcacaacgttaccgttatcgatccggtcgaaaaactgctggcagtgggtcattacctcgaatctaccgttgatattgctgaatccacccgccgtattgcggcaagccgcattccggctgaccacatggtgctgatggctggtttcactgccggtaatgaaaaaggcgagctggtggttctgggacgcaacggttccgactactccgctgcggtgctggcggcctgtttacgcgccgattgttgcgagatctggacggatgttgacggtgtttatacctgcgatccgcgtcaggtgcccgatgcgaggttgttgaagtcgatgtcctatcaggaagcgatggagctttcttacttcggcgctaaagttcttcacccccgcaccattacccccatcgcccagttccagatcccttgcctgattaaaaataccggaaatccccaagcaccaggtacgctcattggtgccagccgtgatgaagacgaattaccggtcaagggcatttccaatctgaataacatggcaatgttcagcgtttccggcccggggatgaaagggatggttggcatggcggcgcgcgtctttgcagcgatgtcacgcgcccgtatttccgtggtgctgattacgcaatcatcttccgaatacagtatcagtttctgcgttccgcaaagcgactgtgtgcgagctgaacgggcaatgcaggaagagttctacctggaactgaaagaaggcttactggagccgttggcggtgacggaacggctggccattatctcggtggtaggtgatggtatgcgcaccttacgtgggatctcggcgaaattctttgccgcgctggcccgcgccaatatcaacattgtcgccattgctcagggatcttctgaacgctcaatctctgtcgtggtcaataacgatgatgcgaccactggcgtgcgcgttactcatcagatgctgttcaataccgatcaggttatcgaagtgtttgtgattggcgtcggtggcgttggcggtgcgctgctggagcaactgaagcgtcagcaaagctggttgaagaataaacatatcgacttacgtgtctgcggtgttgctaactcgaaggcactgctcaccaatgtacatggccttaatctggaaaactggcaggaagaactggcgcaagccaaagagccgtttaatctcgggcgcttaattcgcctcgtgaaagaatatcatctgctgaacccggtcattgttgactgtacttccagccaggctgtggcagatcaatatgccgacttcctgcgcgaaggtttccacgttgttacgccgaacaaaaaggccaacacctcgtcgatggattactaccatcagttgcgttatgcggcggaaaaatcgcggcgtaaattcctctatgacaccaacgttggggctggattaccggttattgagaacctgcaaaatctgctcaatgctggtgatgaattgatgaagttctccggcattctttcaggttcgctttcttatatcttcggcaagttagacgaaggcatgagtttctccgaggcgaccacactggcgcgggaaatgggttataccgaaccggacccgcgagatgatctttctggtatggatgtggcgcgtaagctattgattctcgctcgtgaaacgggacgtgaactggagctggcggatattgaaattgaacctgtgctgcccgcagagtttaacgccgagggtgatgtcgccgcttttatggcgaatctgtcacagctcgacgatctctttgccgcgcgtgtggcgaaggcccgtgatgaaggaaaagttttgcgctatgttggcaatattgatgaagatggcgtctgccgcgtgaagattgccgaagtggatggtaatgatccgctgttcaaagtgaaaaatggcgaaaacgccctggccttctatagccactattatcagccgctgccgttggtactgcgcggatatggtgcgggcaatgacgttacagctgccggtgtctttgctgatctgctacgtaccctctcatggaagttaggagtctga",
+            "dna_sequence_length": 2463,
+            "function": "Aspartokinase (EC 2.7.2.4) / Homoserine dehydrogenase (EC 1.1.1.3)",
+            "id": "kb|g.960.peg.2375",
+            "location": [
+                [
+                    "kb|g.960.c.49",
+                    11942,
+                    "-",
+                    2463
+                ]
+            ],
+            "md5": "0f66dc2b3024a9739d0e912fde12b8ba",
+            "protein_families": [
+                {
+                    "id": "FIG01290007",
+                    "release_version": "Release59",
+                    "subject_db": "FIGfam",
+                    "subject_description": "Aspartokinase (EC 2.7.2.4) / Homoserine dehydrogenase (EC 1.1.1.3)"
+                }
+            ],
+            "protein_translation": "MRVLKFGGTSVANAERFLRVADILESNARQGQVATVLSAPAKITNHLVAMIEKTISGQDALPNISDAERIFAELLTGLAAAQPGFPLAQLKTFVDQEFAQIKHVLHGISLLGQCPDSINAALICRGEKMSIAIMAGVLEARGHNVTVIDPVEKLLAVGHYLESTVDIAESTRRIAASRIPADHMVLMAGFTAGNEKGELVVLGRNGSDYSAAVLAACLRADCCEIWTDVDGVYTCDPRQVPDARLLKSMSYQEAMELSYFGAKVLHPRTITPIAQFQIPCLIKNTGNPQAPGTLIGASRDEDELPVKGISNLNNMAMFSVSGPGMKGMVGMAARVFAAMSRARISVVLITQSSSEYSISFCVPQSDCVRAERAMQEEFYLELKEGLLEPLAVTERLAIISVVGDGMRTLRGISAKFFAALARANINIVAIAQGSSERSISVVVNNDDATTGVRVTHQMLFNTDQVIEVFVIGVGGVGGALLEQLKRQQSWLKNKHIDLRVCGVANSKALLTNVHGLNLENWQEELAQAKEPFNLGRLIRLVKEYHLLNPVIVDCTSSQAVADQYADFLREGFHVVTPNKKANTSSMDYYHQLRYAAEKSRRKFLYDTNVGAGLPVIENLQNLLNAGDELMKFSGILSGSLSYIFGKLDEGMSFSEATTLAREMGYTEPDPRDDLSGMDVARKLLILARETGRELELADIEIEPVLPAEFNAEGDVAAFMANLSQLDDLFAARVAKARDEGKVLRYVGNIDEDGVCRVKIAEVDGNDPLFKVKNGENALAFYSHYYQPLPLVLRGYGAGNDVTAAGVFADLLRTLSWKLGV",
+            "protein_translation_length": 820,
+            "subsystem_data": [
+                [
+                    "Lysine Biosynthesis DAP Pathway",
+                    "A",
+                    "Aspartokinase (EC 2.7.2.4)"
+                ],
+                [
+                    "Threonine and Homoserine Biosynthesis",
+                    "1.x",
+                    "Aspartokinase (EC 2.7.2.4)"
+                ],
+                [
+                    "Threonine and Homoserine Biosynthesis",
+                    "1.x",
+                    "Homoserine dehydrogenase (EC 1.1.1.3)"
+                ]
+            ],
+            "subsystems": [
+                "Lysine Biosynthesis DAP Pathway",
+                "Methionine Biosynthesis",
+                "Threonine and Homoserine Biosynthesis"
+            ],
             "type": "CDS"
         },
         {
