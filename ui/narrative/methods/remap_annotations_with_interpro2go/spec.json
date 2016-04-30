@@ -50,7 +50,7 @@
         "service-mapping": {
             "url": "",
             "name": "ElectronicAnnotationMethods",
-            "method": "interpro2go",
+            "method": "remap_annotations_with_interpro2go",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",

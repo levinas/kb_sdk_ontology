@@ -1,7 +1,7 @@
 #
 # define display information
 #
-name: InterPro2GO
+name: Remap Annotations with InterPro2GO
 tooltip: |
     Maps protein sequences in an annotated genome to GO terms with InterProScan domain scan and mapping table.
 screenshots: []

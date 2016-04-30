@@ -55,13 +55,13 @@ class ElectronicAnnotationMethods:
         #END_CONSTRUCTOR
         pass
 
-    def interpro2go(self, ctx, params):
+    def remap_annotations_with_interpro2go(self, ctx, params):
         # ctx is the context object
         # return variables are: output
-        #BEGIN interpro2go
+        #BEGIN remap_annotations_with_interpro2go
 
         # Print statements to stdout/stderr are captured and available as the method log
-        print('Starting interpro2go method...')
+        print('Starting remap_annotations_with_interpro2go method...')
 
 
         # Step 1 - Parse/examine the parameters and catch any errors
@@ -224,7 +224,7 @@ class ElectronicAnnotationMethods:
         reportObj = {
             'objects_created':[{
                     'ref':str(info[6]) + '/'+str(info[0])+'/'+str(info[4]),
-                    'description':'Genome with annotation mapped using interpro2go'
+                    'description':'Genome with annotation remapped using interpro2go'
                 }],
             'text_message':report
         }
@@ -266,11 +266,11 @@ class ElectronicAnnotationMethods:
 
         print('Returning: '+pformat(output))
 
-        #END interpro2go
+        #END remap_annotations_with_interpro2go
 
         # At some point might do deeper type checking...
         if not isinstance(output, object):
-            raise ValueError('Method interpro2go return value ' +
+            raise ValueError('Method remap_annotations_with_interpro2go return value ' +
                              'output is not type object as required.')
         # return the results
         return [output]

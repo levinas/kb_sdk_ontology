@@ -34,13 +34,13 @@ module ElectronicAnnotationMethods {
     } ElectronicAnnotationResults;
 
 
-    funcdef interpro2go(ElectronicAnnotationParams params) returns (ElectronicAnnotationResults output)
+    funcdef remap_annotations_with_interpro2go(ElectronicAnnotationParams params) returns (ElectronicAnnotationResults output)
         authentication required;
 
-    funcdef ec2go(ElectronicAnnotationParams params) returns (ElectronicAnnotationResults output)
+    funcdef remap_annotations_with_ec2go(ElectronicAnnotationParams params) returns (ElectronicAnnotationResults output)
         authentication required;
 
-    funcdef uniprotkb_keyword2go(ElectronicAnnotationParams params) returns (ElectronicAnnotationResults output)
+    funcdef remap_annotations_with_uniprotkb_keyword2go(ElectronicAnnotationParams params) returns (ElectronicAnnotationResults output)
         authentication required;
 
 };
