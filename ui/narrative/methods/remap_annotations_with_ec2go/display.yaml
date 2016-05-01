@@ -1,0 +1,63 @@
+#
+# define display information
+#
+name: Remap Annotations with EC2GO
+tooltip: |
+    Maps protein sequences in an annotated genome to GO terms with the ec2go ontology translation table.
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar methods that might be useful to the user
+#
+suggestions:
+    apps:
+        related:
+            []
+        next:
+            []
+    methods:
+        related:
+            []
+        next:
+            []
+
+#
+# Configure the display and description of parameters
+#
+parameters :
+    input_genome :
+        ui-name : |
+            Genome
+        short-hint : |
+            The name of the input workspace genome object
+
+    ontology_translation :
+        ui-name : |
+            OntologyTranslation
+        short-hint : |
+            The name of the workspace ontology translation table
+
+    output_genome :
+        ui-name : |
+            Output Genome
+        short-hint : |
+            The name of translated genome annotation object
+
+description : |
+    <p>This is a KBase wrapper for the EC2GO method.</p>
+    <p>This method maps protein sequences in an annotated genome to GO terms with the ec2go ontology translation table.</p>
+
+publications :
+    -
+        pmid: 11374909
+        display-text : |
+            'Hill, David P., et al. "Program description: Strategies for biological annotation of mammalian systems: implementing gene ontologies in mouse genome informatics." Genomics 74.1 (2001): 121-128.'
+        link: http://www.ncbi.nlm.nih.gov/pubmed/11374909
+
+    -
+        pmid: 15960829
+        display-text : |
+            'Camon, Evelyn B., et al. "An evaluation of GO annotation retrieval for BioCreAtIvE and GOA." BMC bioinformatics 6.1 (2005): 1.'
+        link: http://www.ncbi.nlm.nih.gov/pubmed/15960829
