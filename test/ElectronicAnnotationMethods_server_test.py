@@ -52,7 +52,8 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
 
     def getContext(self):
         return self.__class__.ctx
-
+        
+'''
     def test_interpro2go_ok(self):
         input_name = "genome.1"
         output_name = "out.genome.1.interpro2go"
@@ -96,6 +97,8 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
                                                            'input_genome': input_name, 'output_genome': output_name})
         new_obj = self.getWsClient().get_objects([{'ref': workspace+'/'+output_name}])[0]['data']
         print new_obj
+''' 
+    
     def test_uniprotkb_keyword2go_ok(self):
         input_name = "genome.1"
         output_name = "out.genome.1.uniprotkb_keyword2go"
