@@ -488,13 +488,13 @@ class ElectronicAnnotationMethods:
         # return the results
         return [output]
 
-    def remap_annotations_with_uniprotkb_kw2go(self, ctx, params):
+    def remap_annotations_with_uniprotkb_keyword2go(self, ctx, params):
         # ctx is the context object
         # return variables are: output
-        #BEGIN remap_annotations_with_uniprotkb_kw2go
+        #BEGIN remap_annotations_with_uniprotkb_keyword2go
 
         # Print statements to stdout/stderr are captured and available as the method log
-        print('Starting remap_annotations_with_uniprotkb_kw2go method...')
+        print('Starting remap_annotations_with_uniprotkb_keyword2go method...')
 
         # Step 1 - Parse/examine the parameters and catch any errors
         # It is important to check that parameters exist and are defined, and that nice error
@@ -549,7 +549,7 @@ class ElectronicAnnotationMethods:
         trans = translation['translation']
         print('Got translation table from {}/{}.'.format(translation_ws, translation_name))
 
-        # Step 3- Actually perform the uniprotkb_kw2go mapping operation
+        # Step 3- Actually perform the uniprotkb_keyword2go mapping operation
 
         # Add GO terms to Genome object
         # print trans
@@ -636,13 +636,13 @@ class ElectronicAnnotationMethods:
         reportObj = {
             'objects_created':[{
                     'ref':str(info[6]) + '/'+str(info[0])+'/'+str(info[4]),
-                    'description':'Genome with annotation remapped using uniprotkb_kw2go'
+                    'description':'Genome with annotation remapped using uniprotkb_keyword2go'
                 }],
             'text_message':report
         }
 
         # generate a unique name for the Method report
-        reportName = 'uniprotkb_kw2go_report_'+str(hex(uuid.getnode()))
+        reportName = 'uniprotkb_keyword2go_report_'+str(hex(uuid.getnode()))
         report_info_list = None
         try:
             report_info_list = wsClient.save_objects({
@@ -678,11 +678,11 @@ class ElectronicAnnotationMethods:
 
         print('Returning: '+pformat(output))
 
-        #END remap_annotations_with_uniprotkb_kw2go
+        #END remap_annotations_with_uniprotkb_keyword2go
 
         # At some point might do deeper type checking...
         if not isinstance(output, object):
-            raise ValueError('Method remap_annotations_with_uniprotkb_kw2go return value ' +
+            raise ValueError('Method remap_annotations_with_uniprotkb_keyword2go return value ' +
                              'output is not type object as required.')
         # return the results
         return [output]

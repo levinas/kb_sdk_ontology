@@ -50,7 +50,7 @@
         "service-mapping": {
             "url": "",
             "name": "ElectronicAnnotationMethods",
-            "method": "remap_annotations_with_uniprotkb_kw2go",
+            "method": "remap_annotations_with_uniprotkb_keyword2go",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
