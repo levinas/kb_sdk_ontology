@@ -96,7 +96,18 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
                                                            'input_genome': input_name, 'output_genome': output_name})
         new_obj = self.getWsClient().get_objects([{'ref': workspace+'/'+output_name}])[0]['data']
         print new_obj
-
+    def test_uniprotkb_keyword2go_ok(self):
+        input_name = "genome.1"
+        output_name = "out.genome.1.uniprotkb_keyword2go"
+        obj = self.get_test_genome_1()
+        workspace = self.getWsName()
+        self.getWsClient().save_objects({'workspace': workspace, 'objects':
+                                         [{'type': 'KBaseGenomes.Genome', 'name': input_name, 'data': obj}]})
+        ret = self.getImpl().remap_annotations_with_ec2go(self.getContext(),
+                                                          {'workspace': workspace,
+                                                           'input_genome': input_name, 'output_genome': output_name})
+        new_obj = self.getWsClient().get_objects([{'ref': workspace+'/'+output_name}])[0]['data']
+        print new_obj
 
     def get_test_genome_1(self):
         obj_json = '''

@@ -21,14 +21,8 @@ class ElectronicAnnotationMethods:
     '''
     Module Name:
     ElectronicAnnotationMethods
-
     Module Description:
-    A KBase module: ElectronicAnnotationMethods
-This module wraps the following methods:
 
-  interpro2go          -> InterPro2GO
-  ec2go                -> EC2GO
-  uniprotkb_keyword2go -> UniProtKB-Keyword2GO
     '''
 
     ######## WARNING FOR GEVENT USERS #######
@@ -288,11 +282,12 @@ This module wraps the following methods:
         #END remap_annotations_with_interpro2go
 
         # At some point might do deeper type checking...
-        if not isinstance(output, dict):
+        if not isinstance(output, object):
             raise ValueError('Method remap_annotations_with_interpro2go return value ' +
-                             'output is not type dict as required.')
+                             'output is not type object as required.')
         # return the results
         return [output]
+
 
     def remap_annotations_with_ec2go(self, ctx, params):
         # ctx is the context object
@@ -487,9 +482,9 @@ This module wraps the following methods:
         #END remap_annotations_with_ec2go
 
         # At some point might do deeper type checking...
-        if not isinstance(output, dict):
+        if not isinstance(output, object):
             raise ValueError('Method remap_annotations_with_ec2go return value ' +
-                             'output is not type dict as required.')
+                             'output is not type object as required.')
         # return the results
         return [output]
 
@@ -542,7 +537,7 @@ This module wraps the following methods:
         translation_name = ontology_translation
         if not translation_name:
             translation_ws = 'KBaseOntology'
-            translation_name = 'ec2go'
+            translation_name = 'uniprotkb_kw2go'
         try:
             translation = wsClient.get_objects([{'ref': translation_ws+'/'+translation_name}])[0]['data']
         except:
@@ -686,8 +681,8 @@ This module wraps the following methods:
         #END remap_annotations_with_uniprotkb_keyword2go
 
         # At some point might do deeper type checking...
-        if not isinstance(output, dict):
+        if not isinstance(output, object):
             raise ValueError('Method remap_annotations_with_uniprotkb_keyword2go return value ' +
-                             'output is not type dict as required.')
+                             'output is not type object as required.')
         # return the results
         return [output]
