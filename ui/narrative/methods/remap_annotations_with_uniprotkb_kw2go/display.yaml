@@ -1,0 +1,69 @@
+#
+# define display information
+#
+name: Remap Annotations with UniProtKB-Keyword2GO
+tooltip: |
+    UniProtKB/Swiss-Prot entries are assigned keywords that are mapped to corresponding GO terms in the UniProtKB-KW2GO file.
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar methods that might be useful to the user
+#
+suggestions:
+    apps:
+        related:
+            []
+        next:
+            []
+    methods:
+        related:
+            []
+        next:
+            []
+
+#
+# Configure the display and description of parameters
+#
+parameters :
+    input_genome :
+        ui-name : |
+            Genome
+        short-hint : |
+            The name of the input workspace genome object
+
+    ontology_translation :
+        ui-name : |
+            OntologyTranslation
+        short-hint : |
+            The name of the workspace ontology translation table
+
+    output_genome :
+        ui-name : |
+            Output Genome
+        short-hint : |
+            The name of translated genome annotation object
+
+description : |
+    <p>This is a KBase wrapper for the UniProtKB-Keyword2GO method.</p>
+    <p>UniProtKB/Swiss-Prot entries are assigned keywords manually based on literature and sequence analysis checks by curators. Keywords are mapped to corresponding GO terms in the UniProtKB-KW2GO file, which was originally constructed manually by MGI curators and is now maintained by the UniProt-GOA team at EBI. The mappings are then transitively assigned at each UniProt-GOA release. GO annotations using this technique will receive the evidence code Inferred from Electronic Annotation (IEA).</p>
+
+publications :
+    -
+        pmid: 18957448
+        display-text : |
+            'Barrell D, Dimmer E, Huntley RP, Binns D, O’Donovan C, Apweiler R. The GOA database in 2009—an integrated Gene Ontology Annotation resource. Nucleic Acids Research. 2009;37(Database issue):D396-D403. doi:10.1093/nar/gkn803.'
+        link: http://www.ncbi.nlm.nih.gov/pubmed/18957448
+
+    -
+        pmid: 15960829
+        display-text : |
+            'Camon EB, Barrell DG, Dimmer EC, et al. An evaluation of GO annotation retrieval for BioCreAtIvE and GOA. BMC Bioinformatics. 2005;6(Suppl 1):S17. doi:10.1186/1471-2105-6-S1-S17.'
+        link: http://www.ncbi.nlm.nih.gov/pubmed/15960829
+
+    -
+        pmid: 25348405
+        display-text : |
+            'The UniProt Consortium. UniProt: a hub for protein information. Nucleic Acids Research. 2015;43(Database issue):D204-D212. doi:10.1093/nar/gku989.'
+        link: http://www.ncbi.nlm.nih.gov/pubmed/25348405
