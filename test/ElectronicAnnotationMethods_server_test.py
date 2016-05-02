@@ -26,6 +26,7 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
         for nameval in config.items('ElectronicAnnotationMethods'):
             cls.cfg[nameval[0]] = nameval[1]
         cls.wsURL = cls.cfg['workspace-url']
+        print cls.wsURL
         cls.wsClient = workspaceService(cls.wsURL, token=token)
         cls.serviceImpl = ElectronicAnnotationMethods(cls.cfg)
 
@@ -96,7 +97,6 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
                                                            'input_genome': input_name, 'output_genome': output_name})
         new_obj = self.getWsClient().get_objects([{'ref': workspace+'/'+output_name}])[0]['data']
         print new_obj
-
     
     def test_uniprotkb_keyword2go_ok(self):
         input_name = "genome.1"
