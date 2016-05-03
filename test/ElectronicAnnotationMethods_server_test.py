@@ -54,18 +54,18 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
     def getContext(self):
         return self.__class__.ctx
         
-#    def test_interpro2go_ok(self):
-#        input_name = "genome.1"
-#        output_name = "out.genome.1.interpro2go"
-#        obj = self.get_test_genome_1()
-#        workspace = self.getWsName()
-#        self.getWsClient().save_objects({'workspace': workspace, 'objects':
-#                                         [{'type': 'KBaseGenomes.Genome', 'name': input_name, 'data': obj}]})
-#        ret = self.getImpl().remap_annotations_with_interpro2go(self.getContext(),
-#                                                                {'workspace': workspace,
-#                                                                 'input_genome': input_name, 'output_genome': output_name})
-#        new_obj = self.getWsClient().get_objects([{'ref': workspace+'/'+output_name}])[0]['data']
-#        print new_obj
+    def test_interpro2go_ok(self):
+        input_name = "genome.1"
+        output_name = "out.genome.1.interpro2go"
+        obj = self.get_test_genome_1()
+        workspace = self.getWsName()
+        self.getWsClient().save_objects({'workspace': workspace, 'objects':
+                                         [{'type': 'KBaseGenomes.Genome', 'name': input_name, 'data': obj}]})
+        ret = self.getImpl().remap_annotations_with_interpro2go(self.getContext(),
+                                                                {'workspace': workspace,
+                                                                 'input_genome': input_name, 'output_genome': output_name})
+        new_obj = self.getWsClient().get_objects([{'ref': workspace+'/'+output_name}])[0]['data']
+        print new_obj
 
         # contig1 = {'id': '1', 'length': 10, 'md5': 'md5', 'sequence': 'agcttttcat'}
         # contig2 = {'id': '2', 'length': 5, 'md5': 'md5', 'sequence': 'agctt'}
@@ -85,18 +85,18 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
         # self.assertEqual(ret[0]['n_contigs_remaining'], 2)
 
 
-#    def test_ec2go_ok(self):
-#        input_name = "genome.1"
-#        output_name = "out.genome.1.ec2go"
-#        obj = self.get_test_genome_1()
-#        workspace = self.getWsName()
-#        self.getWsClient().save_objects({'workspace': workspace, 'objects':
-#                                         [{'type': 'KBaseGenomes.Genome', 'name': input_name, 'data': obj}]})
-#        ret = self.getImpl().remap_annotations_with_ec2go(self.getContext(),
-#                                                          {'workspace': workspace,
-#                                                           'input_genome': input_name, 'output_genome': output_name})
-#        new_obj = self.getWsClient().get_objects([{'ref': workspace+'/'+output_name}])[0]['data']
-#        print new_obj
+    def test_ec2go_ok(self):
+        input_name = "genome.1"
+        output_name = "out.genome.1.ec2go"
+        obj = self.get_test_genome_1()
+        workspace = self.getWsName()
+        self.getWsClient().save_objects({'workspace': workspace, 'objects':
+                                         [{'type': 'KBaseGenomes.Genome', 'name': input_name, 'data': obj}]})
+        ret = self.getImpl().remap_annotations_with_ec2go(self.getContext(),
+                                                          {'workspace': workspace,
+                                                           'input_genome': input_name, 'output_genome': output_name})
+        new_obj = self.getWsClient().get_objects([{'ref': workspace+'/'+output_name}])[0]['data']
+        print new_obj
     
     def test_uniprotkb_keyword2go_ok(self):
         input_name = "genome.1"
