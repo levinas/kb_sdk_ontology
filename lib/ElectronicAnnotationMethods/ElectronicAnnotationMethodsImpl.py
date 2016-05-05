@@ -137,7 +137,7 @@ This module wraps the following methods:
         trans = translation['translation']
         print('Got translation table from {}/{}.'.format(translation_ws, translation_name))
 
-        # Step 3- Actually perform the intropro2go mapping operation
+        # Step 3- Actually perform the interpro2go mapping operation
 
         # Create feature protein FASTA as input for interproscan
         fasta_path = os.path.join(self.scratch, 'protein.fa')
@@ -355,7 +355,7 @@ This module wraps the following methods:
         trans = translation['translation']
         print('Got translation table from {}/{}.'.format(translation_ws, translation_name))
 
-        # Step 3- Actually perform the intropro2go mapping operation
+        # Step 3- Actually perform the ec2go mapping operation
 
         # Add GO terms to Genome object
         # print trans
