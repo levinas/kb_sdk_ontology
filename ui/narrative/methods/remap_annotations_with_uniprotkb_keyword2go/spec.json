@@ -1,0 +1,97 @@
+{
+    "ver": "0.0.1",
+    "authors": [
+        "jplfaria"
+    ],
+    "contact": "help@kbase.us",
+    "visible": true,
+    "categories": ["active"],
+    "widgets": {
+        "input": null,
+        "output": "kbaseReportView"
+    },
+    "parameters": [
+        {
+            "id": "input_genome",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [ "KBaseGenomes.Genome" ]
+            }
+        },
+        {
+            "id": "ontology_translation",
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [ "KBaseOntology.OntologyTranslation" ]
+            }
+        },
+	{
+	    "id" : "output_genome",
+	    "optional" : false,
+	    "advanced" : false,
+	    "allow_multiple" : false,
+	    "default_values" : [ "mapped.genome" ],
+	    "field_type" : "text",
+	    "text_options" : {
+		"valid_ws_types" : [ "KBaseGenomes.Genome" ],
+		"is_output_name":true
+	    }
+	}
+    ],
+    "behavior": {
+        "service-mapping": {
+            "url": "",
+            "name": "ElectronicAnnotationMethods",
+            "method": "remap_annotations_with_uniprotkb_keyword2go",
+            "input_mapping": [
+                {
+                    "narrative_system_variable": "workspace",
+                    "target_property": "workspace"
+                },
+                {
+                    "input_parameter": "input_genome",
+                    "target_property": "input_genome"
+                },
+                {
+                    "input_parameter": "ontology_translation",
+                    "target_property": "ontology_translation"
+                },
+		{
+		    "input_parameter": "output_genome",
+          	    "target_property": "output_genome"
+		}
+            ],
+            "output_mapping": [
+                {
+                    "service_method_output_path": [0,"report_name"],
+                    "target_property": "report_name"
+                },
+                {
+                    "service_method_output_path": [0,"report_ref"],
+                    "target_property": "report_ref"
+                },
+                {
+                    "constant_value": "5",
+                    "target_property": "report_window_line_height"
+                },
+                {
+                    "service_method_output_path": [0],
+                    "target_property": "electronic_annotation_result"
+                },
+                {
+                    "narrative_system_variable": "workspace",
+                    "target_property": "workspace_name"
+                }
+            ]
+        }
+    },
+    "job_id_output_field": "docker"
+}
