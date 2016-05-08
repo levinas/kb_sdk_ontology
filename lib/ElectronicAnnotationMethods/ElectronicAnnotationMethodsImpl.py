@@ -565,10 +565,12 @@ This module wraps the following methods:
                 continue
             go_list = []
             for term in trans.keys():
-                cutukb_term = re.sub('UniProtKB-KW:KW-\d+\s+','',term)
-                if function.find(cutukb_term) >= 0:
-                    go = map(lambda x: self.equiv_term_to_string(x), equiv_terms['equiv_terms'])
-                    go_list.extend(go)
+                keyword = trans[term]['name']
+                if function.lower().find(keyword.lower()) >= 0:
+                    equiv_terms = trans.get(term)
+                    if equiv_terms:
+                        go = map(lambda x: self.equiv_term_to_string(x), equiv_terms['equiv_terms'])
+                        go_list.extend(go)
             go_list = self.uniq_seen(go_list)
             if len(go_list):
                 n_features_mapped += 1
