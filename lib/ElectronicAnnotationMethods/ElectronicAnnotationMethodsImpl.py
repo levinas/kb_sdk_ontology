@@ -369,13 +369,10 @@ This module wraps the following methods:
                 continue
             matches = re.findall('EC[ :][-0-9]+\.[-0-9]+\.[-0-9]+\.[-0-9]+', function)
             ec_list = self.uniq_seen(matches)
-            print(fid)
             go_list = []
             for ec in ec_list:
                 key = ec.replace("EC ", "EC:")
                 equiv_terms = trans.get(key)
-                print key
-                print equiv_terms
                 if equiv_terms:
                     go = map(lambda x: self.equiv_term_to_string(x), equiv_terms['equiv_terms'])
                     go_list.extend(go)

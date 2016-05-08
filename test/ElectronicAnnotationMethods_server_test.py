@@ -26,7 +26,6 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
         for nameval in config.items('ElectronicAnnotationMethods'):
             cls.cfg[nameval[0]] = nameval[1]
         cls.wsURL = cls.cfg['workspace-url']
-        print cls.wsURL
         cls.wsClient = workspaceService(cls.wsURL, token=token)
         cls.serviceImpl = ElectronicAnnotationMethods(cls.cfg)
 
@@ -53,8 +52,9 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
 
     def getContext(self):
         return self.__class__.ctx
-        
+
     def test_interpro2go_ok(self):
+        return  # temporarily disable until the interpro2go is reinstated in dockerfile
         input_name = "genome.1"
         output_name = "out.genome.1.interpro2go"
         obj = self.get_test_genome_1()
@@ -97,7 +97,7 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
                                                            'input_genome': input_name, 'output_genome': output_name})
         new_obj = self.getWsClient().get_objects([{'ref': workspace+'/'+output_name}])[0]['data']
         print new_obj
-    
+
     def test_uniprotkb_keyword2go_ok(self):
         input_name = "genome.1"
         output_name = "out.genome.1.uniprotkb_keyword2go"
@@ -105,9 +105,9 @@ class ElectronicAnnotationMethodsTest(unittest.TestCase):
         workspace = self.getWsName()
         self.getWsClient().save_objects({'workspace': workspace, 'objects':
                                          [{'type': 'KBaseGenomes.Genome', 'name': input_name, 'data': obj}]})
-        ret = self.getImpl().remap_annotations_with_ec2go(self.getContext(),
-                                                          {'workspace': workspace,
-                                                           'input_genome': input_name, 'output_genome': output_name})
+        ret = self.getImpl().remap_annotations_with_uniprotkb_keyword2go(self.getContext(),
+                                                                         {'workspace': workspace,
+                                                                          'input_genome': input_name, 'output_genome': output_name})
         new_obj = self.getWsClient().get_objects([{'ref': workspace+'/'+output_name}])[0]['data']
         print new_obj
 
