@@ -8,7 +8,7 @@
     "categories": ["active"],
     "widgets": {
         "input": null,
-        "output": "kbaseReportView"
+        "output": "kbaseGenomeView"
     },
     "parameters": [
         {
@@ -52,6 +52,14 @@
             "name": "ElectronicAnnotationMethods",
             "method": "remap_annotations_with_uniprotkb_keyword2go",
             "input_mapping": [
+                {
+                    "narrative_system_variable": "workspace",
+                    "target_property": "ws"
+                },
+                {
+                    "input_parameter": "output_genome",
+          	    "target_property": "id"
+                },
                 {
                     "narrative_system_variable": "workspace",
                     "target_property": "workspace"
