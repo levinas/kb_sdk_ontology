@@ -146,8 +146,9 @@ This module wraps the following methods:
 
         # Check java version
         subprocess.call("which java", shell=True)
-        subprocess.call("ls -ltr /usr/bin/java", shell=True)
+        subprocess.call("ls -ltr /etc/alternatives/java", shell=True)
         subprocess.call("java -version", shell=True)
+        subprocess.call("ls -ltr /usr/lib/jvm", shell=True)
 
         # Run interproscan in standalone mode
         cmd = ['interproscan.sh',
