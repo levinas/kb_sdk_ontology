@@ -145,9 +145,9 @@ This module wraps the following methods:
         self.genome_to_protein_fasta(genome, fasta_path)
 
         # Check java version
-        subprocess.call("which java"; shell=True)
-        subprocess.call("ls -ltr /usr/bin/java"; shell=True)
-        subprocess.call("java -version"; shell=True)
+        subprocess.call("which java", shell=True)
+        subprocess.call("ls -ltr /usr/bin/java", shell=True)
+        subprocess.call("java -version", shell=True)
 
         # Run interproscan in standalone mode
         cmd = ['interproscan.sh',
