@@ -16,6 +16,10 @@ RUN apt-add-repository ppa:webupd8team/java
 RUN apt-get update
 RUN apt-get -qq install -y oracle-java8-installer
 
+RUN \
+    echo 'export JAVA_HOME=/usr/lib/jvm/java-8-oracle/jre' >> /kb/deployment/user-env.sh && \
+    echo 'export PATH=$JAVA_HOME/bin:$PATH' >> /kb/deployment/user-env.sh
+
 # Install InterProScan
 # RUN \
 #     echo 'Downloading big interproscan file...' && \
@@ -23,7 +27,8 @@ RUN apt-get -qq install -y oracle-java8-installer
 #     tar xf interproscan-5.18-57.0-64-bit.tar.gz && \
 #     mv interproscan-5.18-57.0 /kb/deployment/interproscan && \
 #     echo 'export INTERPROSCAN_INSTALL=/kb/deployment/interproscan' >> /kb/deployment/user-env.sh && \
-#     echo 'export PATH=/usr/lib/jvm/java-8-oracle/jre/bin:$PATH:$INTERPROSCAN_INSTALL' >> /kb/deployment/user-env.sh
+#     echo 'export PATH=$INTERPROSCAN_INSTALL:$PATH' >> /kb/deployment/user-env.sh
+
 
 # Install InterProScan without data/ directory
 RUN \
@@ -31,8 +36,7 @@ RUN \
     curl -s http://bioseed.mcs.anl.gov/~fangfang/kb/interproscan-5.18-57.0-wo-data.tgz |tar xzf - && \
     mv interproscan-5.18-57.0 /kb/deployment/interproscan && \
     echo 'export INTERPROSCAN_INSTALL=/kb/deployment/interproscan' >> /kb/deployment/user-env.sh && \
-    echo 'export JAVA_HOME=/usr/lib/jvm/java-8-oracle/jre' >> /kb/deployment/user-env.sh && \
-    echo 'export PATH=$JAVA_HOME/bin:$PATH:$INTERPROSCAN_INSTALL' >> /kb/deployment/user-env.sh
+    echo 'export PATH=$INTERPROSCAN_INSTALL:$PATH' >> /kb/deployment/user-env.sh
 
 
 # Copy local wrapper files, and build
