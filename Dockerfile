@@ -12,15 +12,9 @@ MAINTAINER KBase Developer
 
 RUN apt-get install libffi-dev libssl-dev
 RUN pip install --upgrade requests[security]
-RUN echo 'Before:'
-RUN which java
-RUN java -version
 RUN apt-add-repository ppa:webupd8team/java
 RUN apt-get update
-RUN apt-get -q install -y oracle-java8-installer
-RUN echo 'After:'
-RUN which java
-RUN java -version
+RUN apt-get -qq install -y oracle-java8-installer
 
 # Install InterProScan
 # RUN \
@@ -29,7 +23,7 @@ RUN java -version
 #     tar xf interproscan-5.18-57.0-64-bit.tar.gz && \
 #     mv interproscan-5.18-57.0 /kb/deployment/interproscan && \
 #     echo 'export INTERPROSCAN_INSTALL=/kb/deployment/interproscan' >> /kb/deployment/user-env.sh && \
-#     echo 'export PATH=$PATH:$INTERPROSCAN_INSTALL' >> /kb/deployment/user-env.sh
+#     echo 'export PATH=/usr/lib/jvm/java-8-oracle/jre/bin:$PATH:$INTERPROSCAN_INSTALL' >> /kb/deployment/user-env.sh
 
 # Install InterProScan without data/ directory
 RUN \
@@ -37,7 +31,7 @@ RUN \
     curl -s http://bioseed.mcs.anl.gov/~fangfang/kb/interproscan-5.18-57.0-wo-data.tgz |tar xzf - && \
     mv interproscan-5.18-57.0 /kb/deployment/interproscan && \
     echo 'export INTERPROSCAN_INSTALL=/kb/deployment/interproscan' >> /kb/deployment/user-env.sh && \
-    echo 'export PATH=$PATH:$INTERPROSCAN_INSTALL' >> /kb/deployment/user-env.sh
+    echo 'export PATH=/usr/lib/jvm/java-8-oracle/jre/bin:$PATH:$INTERPROSCAN_INSTALL' >> /kb/deployment/user-env.sh
 
 
 # Copy local wrapper files, and build
