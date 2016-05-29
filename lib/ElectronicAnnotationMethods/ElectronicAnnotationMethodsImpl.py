@@ -181,6 +181,9 @@ This module wraps the following methods:
         for fea in genome['features']:
             fid = fea['id']
             n_total_features += 1
+            function = fea.get('function')
+            if not function:
+                continue
             if fid in fid_to_go:
                 n_features_mapped += 1
                 go_func = fid_to_go[fid]
