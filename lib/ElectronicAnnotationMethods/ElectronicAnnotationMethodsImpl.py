@@ -147,6 +147,7 @@ This module wraps the following methods:
         # Check java version
         subprocess.call("which java", shell=True)
         subprocess.call("type -p java", shell=True)
+        subprocess.call("ls -ltr /kb/runtime/java/bin/", shell=True)
         subprocess.call("ls -ltr /kb/runtime/bin/java", shell=True)
         subprocess.call("ls -ltr /usr/bin/java", shell=True)
         subprocess.call("ls -ltr /etc/alternatives/java", shell=True)
