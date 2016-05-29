@@ -44,6 +44,8 @@ This module wraps the following methods:
     def genome_to_protein_fasta(self, genome, fasta_file):
         records = []
         for feature in genome['features']:
+            if 'protein_translation' not in feature:
+                continue
             record = SeqRecord(Seq(feature['protein_translation']),
                                id=feature['id'], description=feature['function'])
             records.append(record)
