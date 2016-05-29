@@ -173,8 +173,8 @@ This module wraps the following methods:
                 key = 'InterPro:'+domain
                 equiv_terms = trans.get(key)
                 if equiv_terms:
-                    go_terms = '|'.join(sorted(map(lambda x: x['equiv_term'], equiv_terms['equiv_terms'])))
-                    fid_to_go[fid] = go_terms
+                    go = map(lambda x: self.equiv_term_to_string(x), equiv_terms['equiv_terms'])
+                    fid_to_go[fid] = ' / '.join(sorted(go))
 
         n_total_features = 0
         n_features_mapped = 0
@@ -182,10 +182,13 @@ This module wraps the following methods:
             fid = fea['id']
             n_total_features += 1
             if fid in fid_to_go:
-                anno = fea['annotations'] if 'annotations' in fea else []
-                anno.append([fid_to_go[fid], 'interpro2go', int(time.time())])
                 n_features_mapped += 1
-                print('Mapped {} to {}.'.format(fid, fid_to_go[fid]))
+                go_func = fid_to_go[fid]
+                fea['function'] = go_func
+                print('Mapped {} from "{}" to "{}".'.format(fid, function, go_func))
+                # anno = fea['annotations'] if 'annotations' in fea else []
+                # anno.append([fid_to_go[fid], 'interpro2go', int(time.time())])
+                # print('Mapped {} to {}.'.format(fid, fid_to_go[fid]))
 
         # Step 4- Save the new Genome back to the Workspace
         # When objects are saved, it is important to always set the Provenance of that object.  The basic
@@ -380,7 +383,7 @@ This module wraps the following methods:
                 n_features_mapped += 1
                 go_func = ' / '.join(sorted(go_list))
                 fea['function'] = go_func
-                print('Mapped {} from "{}"to "{}".'.format(fid, function, go_func))
+                print('Mapped {} from "{}" to "{}".'.format(fid, function, go_func))
 
 
         # Step 4- Save the new Genome back to the Workspace
