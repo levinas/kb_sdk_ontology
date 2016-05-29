@@ -35,6 +35,7 @@ RUN \
     echo 'Downloading interproscan tarball without data/...' && \
     curl -s http://bioseed.mcs.anl.gov/~fangfang/kb/interproscan-5.18-57.0-wo-data.tgz |tar xzf - && \
     mv interproscan-5.18-57.0 /kb/deployment/interproscan && \
+    ln -s /data/interproscan-5.18-57.0-data /kb/deployment/interproscan/data && \
     echo 'export INTERPROSCAN_INSTALL=/kb/deployment/interproscan' >> /kb/deployment/user-env.sh && \
     echo 'export PATH=$INTERPROSCAN_INSTALL:$PATH' >> /kb/deployment/user-env.sh
 

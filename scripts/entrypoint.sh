@@ -14,7 +14,6 @@ elif [ "${1}" = "test" ] ; then
   echo "Initialize module"
   cd /data
   curl -s http://bioseed.mcs.anl.gov/~fangfang/kb/interproscan-5.18-57.0-data.tgz |tar xzf -
-  ln -s /data/interproscan-5.18-57.0-data /kb/deployment/interproscan/data
   touch __READY__
   echo "Run Tests"
   make test
@@ -24,7 +23,7 @@ elif [ "${1}" = "init" ] ; then
   echo "Initialize module"
   cd /data
   curl -s http://bioseed.mcs.anl.gov/~fangfang/kb/interproscan-5.18-57.0-data.tgz |tar xzf -
-  ln -s /data/interproscan-5.18-57.0-data /kb/deployment/interproscan/data
+  # ln -s /data/interproscan-5.18-57.0-data /kb/deployment/interproscan/data
   touch __READY__
 elif [ "${1}" = "bash" ] ; then
   bash
