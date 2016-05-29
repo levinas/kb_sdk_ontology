@@ -144,22 +144,6 @@ This module wraps the following methods:
         interpro_out = os.path.join(self.scratch, 'protein.tsv')
         self.genome_to_protein_fasta(genome, fasta_path)
 
-        # Check java version
-        subprocess.call("which java", shell=True)
-        subprocess.call("type -p java", shell=True)
-        subprocess.call("ls -ltr /kb/runtime/java/bin/", shell=True)
-        subprocess.call("ls -ltr /kb/runtime/bin/java", shell=True)
-        subprocess.call("ls -ltr /usr/bin/java", shell=True)
-        subprocess.call("ls -ltr /etc/alternatives/java", shell=True)
-        subprocess.call("java -version", shell=True)
-        subprocess.call("/kb/runtime/bin/java -version", shell=True)
-        subprocess.call("/usr/bin/java -version", shell=True)
-        subprocess.call("/etc/alternatives/java -version", shell=True)
-        subprocess.call("ls -ltr /usr/lib/jvm", shell=True)
-        subprocess.call("ls -ltr /kb/deployment/interproscan", shell=True)
-        subprocess.call("ls -ltr /data", shell=True)
-        subprocess.call("ls -ltr /data/interproscan-5.18-57.0-data", shell=True)
-
         # Run interproscan in standalone mode
         cmd = ['interproscan.sh',
                '-i', fasta_path,
