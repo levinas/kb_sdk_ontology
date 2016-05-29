@@ -148,8 +148,11 @@ This module wraps the following methods:
         subprocess.call("which java", shell=True)
         subprocess.call("type -p java", shell=True)
         subprocess.call("ls -ltr /kb/runtime/bin/java", shell=True)
+        subprocess.call("ls -ltr /usr/bin/java", shell=True)
         subprocess.call("ls -ltr /etc/alternatives/java", shell=True)
+        subprocess.call("java -version", shell=True)
         subprocess.call("/kb/runtime/bin/java -version", shell=True)
+        subprocess.call("/usr/bin/java -version", shell=True)
         subprocess.call("/etc/alternatives/java -version", shell=True)
         subprocess.call("ls -ltr /usr/lib/jvm", shell=True)
 
