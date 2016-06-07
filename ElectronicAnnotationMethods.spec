@@ -22,6 +22,7 @@ module ElectronicAnnotationMethods {
         string workspace;
         string input_genome;
         string ontology_translation;
+	int overwrite_function;
         string output_genome;
     } ElectronicAnnotationParams;
 
