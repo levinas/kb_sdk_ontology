@@ -11,10 +11,6 @@ fi
 if [ $# -eq 0 ] ; then
   sh ./scripts/start_server.sh
 elif [ "${1}" = "test" ] ; then
-  echo "Initialize module"
-  cd /data
-  curl -s http://bioseed.mcs.anl.gov/~fangfang/kb/interproscan-5.18-57.0-data.tgz |tar xzf -
-  touch __READY__
   echo "Run Tests"
   make test
 elif [ "${1}" = "async" ] ; then
