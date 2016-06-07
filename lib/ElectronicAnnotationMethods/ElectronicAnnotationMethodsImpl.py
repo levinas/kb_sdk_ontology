@@ -63,6 +63,20 @@ This module wraps the following methods:
             s += ' ' + re.sub(r'^GO:', '', name)
         return s
 
+    def add_ontology_to_feature(self, fea, x):
+        term = x['equiv_term']
+        name = x.get('equiv_name', '')
+        name = re.sub(r'^GO:', '', name)
+        if not 'ontology' in fea:
+            fea['ontology'] = {}
+        if 'GO' not in fea['ontology']:
+            fea['ontology']['GO'] = []
+        fea['ontology']['GO'].append([term, name])
+
+    def add_equiv_terms_to_feature(self, fea, terms):
+        for x in terms['equiv_terms']:
+            self.add_ontology_to_feature(fea, x)
+
     #END_CLASS_HEADER
 
     # config contains contents of config file in a hash or None if it couldn't
@@ -327,6 +341,8 @@ This module wraps the following methods:
 
         ontology_translation = params.get('ontology_translation')
 
+        overwrite_function = params.get('overwrite_function')
+
         # Step 2- Download the input data
         # Most data will be based to your method by its workspace name.  Use the workspace to pull that data
         # (or in many cases, subsets of that data).  The user token is used to authenticate with the KBase
@@ -382,12 +398,14 @@ This module wraps the following methods:
                 key = ec.replace("EC ", "EC:")
                 equiv_terms = trans.get(key)
                 if equiv_terms:
+                    self.add_equiv_terms_to_feature(fea, equiv_terms)
                     go = map(lambda x: self.equiv_term_to_string(x), equiv_terms['equiv_terms'])
                     go_list.extend(go)
             if len(go_list):
                 n_features_mapped += 1
                 go_func = ' / '.join(sorted(go_list))
-                fea['function'] = go_func
+                if overwrite_function:
+                    fea['function'] = go_func
                 print('Mapped {} from "{}" to "{}".'.format(fid, function, go_func))
 
 
