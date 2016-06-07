@@ -33,6 +33,18 @@
                 "valid_ws_types": [ "KBaseOntology.OntologyTranslation" ]
             }
         },
+        {
+            "id": "overwrite_function",
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "checkbox",
+            "checkbox_options":{
+                "checked_value": 1,
+                "unchecked_value": 0
+            }
+        },
 	{
 	    "id" : "output_genome",
 	    "optional" : false,
@@ -63,6 +75,10 @@
                 {
                     "input_parameter": "ontology_translation",
                     "target_property": "ontology_translation"
+                },
+                {
+                    "input_parameter": "overwrite_function",
+                    "target_property": "overwrite_function"
                 },
 		{
 		    "input_parameter": "output_genome",

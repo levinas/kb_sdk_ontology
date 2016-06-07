@@ -39,6 +39,12 @@ parameters :
         short-hint : |
             The name of the workspace ontology translation table
 
+    overwrite_function :
+        ui-name : |
+            Overwrite function
+        short-hint : |
+            Overwrite the function field of the genome object with ontology assignments
+
     output_genome :
         ui-name : |
             Output Genome
